@@ -20,7 +20,7 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
       id: 'easy' as const,
       name: 'Fácil',
       description: 'Tiempo generoso para aprender',
-      timeLimit: '5 minutos',
+      timeLimit: '3 minutos',
       icon: Clock,
       color: 'text-green-400'
     },
@@ -28,7 +28,7 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
       id: 'medium' as const,
       name: 'Medio',
       description: 'Desafío equilibrado',
-      timeLimit: '3 minutos',
+      timeLimit: '2 minutos',
       icon: Target,
       color: 'text-yellow-400'
     },
@@ -36,7 +36,7 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
       id: 'hard' as const,
       name: 'Difícil',
       description: 'Para expertos en SQL',
-      timeLimit: '2 minutos',
+      timeLimit: '1 minuto',
       icon: Zap,
       color: 'text-red-400'
     }
