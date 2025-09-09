@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Database } from 'lucide-react';
+import { Database, LogIn, ArrowLeft } from 'lucide-react';
 import { useGameState } from './hooks/useGameState';
 import { LevelSelector } from './components/LevelSelector';
 import { LevelGame } from './components/LevelGame';
+import { Login } from './components/Login';
 
-type GameView = 'menu' | 'level';
+type GameView = 'menu' | 'level' | 'login';
 
 function App() {
   const [currentView, setCurrentView] = useState<GameView>('menu');
@@ -18,6 +19,14 @@ function App() {
   };
 
   const handleBackToMenu = () => {
+    setCurrentView('menu');
+  };
+
+  const handleShowLogin = () => {
+    setCurrentView('login');
+  };
+
+  const handleBackFromLogin = () => {
     setCurrentView('menu');
   };
 
@@ -50,13 +59,38 @@ function App() {
                 <h1 className="text-xl font-bold text-gray-100">Unravel: The data detective</h1>
               </div>
             </div>
+            <div className="flex items-center gap-4">
+              {currentView === 'login' ? (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleBackFromLogin}
+                  className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-gray-600 cursor-pointer"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Volver
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleShowLogin}
+                  className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-gray-600 cursor-pointer"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Iniciar Sesión
+                </motion.button>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
       <main className="relative z-10">
         <AnimatePresence mode="wait">
-          {currentView === 'menu' ? (
+          {currentView === 'login' ? (
+            <Login key="login" onBack={handleBackFromLogin} />
+          ) : currentView === 'menu' ? (
             <motion.div
               key="menu"
               initial={{ opacity: 0 }}
