@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Lock, CheckCircle, Clock, Search } from 'lucide-react';
+import { Lock, CheckCircle, Clock, FileText, Target } from 'lucide-react';
 import type { Level } from '../types/game';
 import { DifficultySelector } from './DifficultySelector';
 
@@ -35,11 +35,11 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
       case 'completed':
         return <CheckCircle className="w-6 h-6 text-green-400" />;
       case 'current':
-        return <Search className="w-6 h-6 text-primary-400" />;
+        return <Target className="w-6 h-6 text-primary-400" />;
       case 'locked':
         return <Lock className="w-6 h-6 text-gray-500" />;
       default:
-        return <div className="w-6 h-6 rounded-full border-2 border-gray-500" />;
+        return <FileText className="w-6 h-6 text-gray-400" />;
     }
   };
 
@@ -67,11 +67,8 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
   return (
     <div className={`${className}`}>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-100 mb-2">
-          Unravel: The data detective
-        </h1>
-        <p className="text-gray-400">
-          Domina SQL completando la secuencia de la historia.
+        <p className="text-gray-400 font-mono ">
+          Selecciona una misión para comenzar tu investigación. Cada caso requiere habilidades específicas de análisis de datos.
         </p>
       </div>
 
@@ -99,14 +96,25 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  {getStatusIcon(level)}
+                  <div className="relative">
+                    {getStatusIcon(level)}
+                    {status === 'current' && (
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary-500 rounded-full animate-pulse"></div>
+                    )}
+                  </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-100">
-                      Capítulo {level.id}
+                      MISIÓN {level.id}
                     </h3>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-gray-400 font-mono">
                       {level.name}
                     </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs text-red-400 font-mono">
+                        {status === 'current' ? 'ACTIVA' : status === 'completed' ? 'COMPLETADA' : status === 'locked' ? 'BLOQUEADA' : 'DISPONIBLE'}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 
@@ -124,19 +132,19 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400">
-                    {level.challenges.length > 0 && `${level.challenges.length} desafíos`}
+                  <span className="text-xs text-gray-400 font-mono">
+                    {level.challenges.length > 0 && `${level.challenges.length} OBJETIVOS`}
                   </span>
                   {level.completed && (
-                    <span className="text-xs text-green-400 font-medium">
-                      Completado
+                    <span className="text-xs text-green-400 font-medium font-mono">
+                      MISIÓN EXITOSA
                     </span>
                   )}
                 </div>
                 
                 {status === 'locked' && (
-                  <span className="text-xs text-gray-500">
-                    Próximamente...
+                  <span className="text-xs text-gray-500 font-mono">
+                    [BLOQUEADO]
                   </span>
                 )}
               </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Trophy, Home } from 'lucide-react';
+import { ArrowLeft, Trophy, Home, Shield, Search, AlertTriangle, Target, FileText } from 'lucide-react';
 import type { Level } from '../types/game';
 import { ChallengeCard } from './ChallengeCard';
 
@@ -27,7 +27,6 @@ export const LevelGame: React.FC<LevelGameProps> = ({
   const currentChallenge = level.challenges[currentChallengeIndex];
 
   useEffect(() => {
-    // Reset state when level changes
     setCurrentChallengeIndex(0);
     setChallengeTimes([]);
     setIsLevelCompleted(false);
@@ -66,34 +65,42 @@ export const LevelGame: React.FC<LevelGameProps> = ({
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return 'text-green-400 bg-green-900/20';
-      case 'medium': return 'text-yellow-400 bg-yellow-900/20';
-      case 'hard': return 'text-red-400 bg-red-900/20';
-      default: return 'text-gray-400 bg-gray-800';
+      case 'easy': return 'text-green-400 bg-green-900/20 border-green-600';
+      case 'medium': return 'text-yellow-400 bg-yellow-900/20 border-yellow-600';
+      case 'hard': return 'text-red-400 bg-red-900/20 border-red-600';
+      default: return 'text-gray-400 bg-gray-800 border-gray-600';
     }
   };
 
   const getDifficultyLabel = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return 'Fácil';
-      case 'medium': return 'Medio';
-      case 'hard': return 'Difícil';
-      default: return 'Desconocido';
+      case 'easy': return 'NIVEL 1';
+      case 'medium': return 'NIVEL 2';
+      case 'hard': return 'NIVEL 3';
+      default: return 'DESCONOCIDO';
+    }
+  };
+
+  const getDifficultyIcon = (difficulty: string) => {
+    switch (difficulty) {
+      case 'easy': return <Shield className="w-4 h-4" />;
+      case 'medium': return <Target className="w-4 h-4" />;
+      case 'hard': return <AlertTriangle className="w-4 h-4" />;
+      default: return <FileText className="w-4 h-4" />;
     }
   };
 
   const getTimeLimitForDifficulty = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return 180; // 3 minutos
-      case 'medium': return 120; // 2 minutos
-      case 'hard': return 60; // 1 minutos
+      case 'easy': return 180; 
+      case 'medium': return 120;
+      case 'hard': return 60;
       default: return 180;
     }
   };
 
   return (
     <div className={`min-h-screen bg-gray-900 ${className}`}>
-      {/* Header */}
       <div className="bg-gray-800 border-b border-gray-700 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -107,21 +114,36 @@ export const LevelGame: React.FC<LevelGameProps> = ({
                 <ArrowLeft className="w-4 h-4" />
                 <span>Volver</span>
               </motion.button>
-
             </div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-gray-100">
-                {level.name}:
-              </h1>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(selectedDifficulty)}`}>
-                {getDifficultyLabel(selectedDifficulty)}
-              </span>
+            
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary-500 p-2 rounded-lg relative">
+                  <Search className="w-5 h-5 text-white" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-gray-100 font-mono">
+                    MISIÓN {level.id}
+                  </h1>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-primary-400 font-mono">INVESTIGACIÓN ACTIVA</span>
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <span className={`px-3 py-1 rounded-lg text-xs font-medium font-mono border ${getDifficultyColor(selectedDifficulty)} flex items-center gap-1`}>
+                  {getDifficultyIcon(selectedDifficulty)}
+                  {getDifficultyLabel(selectedDifficulty)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-4xl mx-auto px-6 py-8">
         <AnimatePresence mode="wait">
           {isLevelCompleted ? (
@@ -132,39 +154,57 @@ export const LevelGame: React.FC<LevelGameProps> = ({
               exit={{ opacity: 0, scale: 0.9 }}
               className="text-center"
             >
-              <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 shadow-xl max-w-2xl mx-auto">
+              <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 shadow-xl max-w-2xl mx-auto">
                 <div className="flex justify-center mb-6">
-                  <Trophy className="w-16 h-16 text-yellow-400" />
+                  <div className="bg-green-500 p-4 rounded-xl relative">
+                    <Trophy className="w-16 h-16 text-white" />
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse"></div>
+                  </div>
                 </div>
 
-                <h2 className="text-3xl font-bold text-gray-100 mb-4">
-                  ¡Capítulo Completado!
-                </h2>
-
-                <p className="text-gray-300 mb-6">
-                  Has completado todos los desafíos del {level.name}
-                </p>
+                <div className="text-center mb-6">
+                  <h2 className="text-3xl font-bold text-gray-100 mb-2 font-mono">
+                    MISIÓN EXITOSA
+                  </h2>
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <Search className="w-4 h-4 text-green-400" />
+                    <span className="text-green-400 font-mono text-sm">INVESTIGACIÓN COMPLETADA</span>
+                    <Search className="w-4 h-4 text-green-400" />
+                  </div>
+                  <p className="text-gray-300 font-mono">
+                    Has resuelto exitosamente todos los objetivos de la {level.name}
+                  </p>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                  <div className="bg-gray-700 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-primary-400 mb-1">
+                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="w-4 h-4 text-primary-400" />
+                      <span className="text-xs text-primary-400 font-mono">TIEMPO TOTAL</span>
+                    </div>
+                    <div className="text-2xl font-bold text-primary-400 font-mono">
                       {formatTime(totalLevelTime)}
                     </div>
-                    <div className="text-sm text-gray-400">Tiempo Total</div>
                   </div>
 
-                  <div className="bg-gray-700 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-accent-400 mb-1">
+                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <AlertTriangle className="w-4 h-4 text-yellow-400" />
+                      <span className="text-xs text-yellow-400 font-mono">PROMEDIO</span>
+                    </div>
+                    <div className="text-2xl font-bold text-yellow-400 font-mono">
                       {formatTime(getAverageTime())}
                     </div>
-                    <div className="text-sm text-gray-400">Tiempo Promedio</div>
                   </div>
 
-                  <div className="bg-gray-700 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-green-400 mb-1">
-                      {selectedDifficulty.charAt(0).toUpperCase() + selectedDifficulty.slice(1)}
+                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      {getDifficultyIcon(selectedDifficulty)}
+                      <span className="text-xs text-green-400 font-mono">SEGURIDAD</span>
                     </div>
-                    <div className="text-sm text-gray-400">Dificultad</div>
+                    <div className="text-2xl font-bold text-green-400 font-mono">
+                      {getDifficultyLabel(selectedDifficulty)}
+                    </div>
                   </div>
                 </div>
 
@@ -173,10 +213,10 @@ export const LevelGame: React.FC<LevelGameProps> = ({
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={onBack}
-                    className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-gray-600 cursor-pointer"
+                    className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-gray-600 cursor-pointer"
                   >
                     <Home className="w-4 h-4" />
-                    Volver a Capítulos
+                    <span className="font-mono">VOLVER AL CENTRO DE OPERACIONES</span>
                   </motion.button>
                 </div>
               </div>

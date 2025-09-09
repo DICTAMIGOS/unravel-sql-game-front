@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Target, Zap, ChevronDown } from 'lucide-react';
+import { Target, ChevronDown, Shield, AlertTriangle, Lock } from 'lucide-react';
 
 interface DifficultySelectorProps {
   selectedDifficulty: 'easy' | 'medium' | 'hard';
@@ -18,27 +18,30 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   const difficulties = [
     {
       id: 'easy' as const,
-      name: 'Fácil',
-      description: 'Tiempo generoso para aprender',
+      name: 'NIVEL 1',
+      description: 'Tiempo generoso para análisis',
       timeLimit: '3 minutos',
-      icon: Clock,
-      color: 'text-green-400'
+      icon: Shield,
+      color: 'text-green-400',
+      securityLevel: 'SEGURIDAD BÁSICA'
     },
     {
       id: 'medium' as const,
-      name: 'Medio',
-      description: 'Desafío equilibrado',
+      name: 'NIVEL 2',
+      description: 'Presión moderada de tiempo',
       timeLimit: '2 minutos',
       icon: Target,
-      color: 'text-yellow-400'
+      color: 'text-yellow-400',
+      securityLevel: 'SEGURIDAD MEDIA'
     },
     {
       id: 'hard' as const,
-      name: 'Difícil',
-      description: 'Para expertos en SQL',
+      name: 'NIVEL 3',
+      description: 'Máxima presión temporal',
       timeLimit: '1 minuto',
-      icon: Zap,
-      color: 'text-red-400'
+      icon: Lock,
+      color: 'text-red-400',
+      securityLevel: 'SEGURIDAD MÁXIMA'
     }
   ];
 
@@ -47,11 +50,14 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   return (
     <div className={`${className}`}>
       <div className="mb-4">
-        <h2 className="text-xl font-bold text-gray-100 mb-1">
-          Dificultad
-        </h2>
-        <p className="text-sm text-gray-400">
-          El mismo desafío, mayor presión contrarreloj
+        <div className="flex items-center gap-2 mb-2">
+          <AlertTriangle className="w-5 h-5 text-yellow-400" />
+          <h2 className="text-xl font-bold text-gray-100">
+            NIVEL DE SEGURIDAD
+          </h2>
+        </div>
+        <p className="text-sm text-gray-400 font-mono">
+          Selecciona el nivel de presión temporal para la misión
         </p>
       </div>
 
@@ -65,10 +71,13 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
           <div className="flex items-center gap-3">
             <selectedDifficultyData.icon className={`w-5 h-5 ${selectedDifficultyData.color}`} />
             <div className="text-left">
-              <div className="text-gray-100 font-medium">
+              <div className="text-gray-100 font-medium font-mono">
                 {selectedDifficultyData.name}
               </div>
-              <div className="text-sm text-gray-400">
+              <div className="text-sm text-gray-400 font-mono">
+                {selectedDifficultyData.securityLevel}
+              </div>
+              <div className="text-xs text-gray-500">
                 {selectedDifficultyData.timeLimit}
               </div>
             </div>
@@ -109,10 +118,13 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
                   >
                     <Icon className={`w-5 h-5 ${difficulty.color}`} />
                     <div className="flex-1">
-                      <div className="text-gray-100 font-medium">
+                      <div className="text-gray-100 font-medium font-mono">
                         {difficulty.name}
                       </div>
-                      <div className="text-sm text-gray-400">
+                      <div className="text-sm text-gray-400 font-mono">
+                        {difficulty.securityLevel}
+                      </div>
+                      <div className="text-xs text-gray-500">
                         {difficulty.description} • {difficulty.timeLimit}
                       </div>
                     </div>
