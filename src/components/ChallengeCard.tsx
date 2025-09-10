@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, ArrowRight, X, Target, Search, AlertTriangle, Shield, FileText } from 'lucide-react';
+import { CheckCircle, ArrowRight, X, Target, Shield, FileText } from 'lucide-react';
 import type { SQLChallenge } from '../types/game';
 import { SQLTemplate } from './SQLTemplate';
 import { Timer } from './Timer';
@@ -67,6 +67,13 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     setTimerState(prev => ({ ...prev, elapsedTime }));
   };
 
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+
 
   return (
     <motion.div
@@ -74,19 +81,37 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       className={`bg-gray-800 border border-gray-700 rounded-xl p-6 shadow-xl relative ${className}`}
     >
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <div className="bg-primary-500 p-2 rounded-lg relative">
+      {/* Mobile Layout */}
+      <div className="block sm:hidden mb-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-gray-100 font-mono">OBJETIVO {challenge.id}</h2>
+          <div className="flex items-center gap-2">
+            <span className={`font-mono text-sm font-semibold ${
+              !timerState.timeLimit ? 'text-primary-400' :
+              (timerState.elapsedTime / timerState.timeLimit) * 100 >= 90 ? 'text-red-400' :
+              (timerState.elapsedTime / timerState.timeLimit) * 100 >= 75 ? 'text-yellow-400' :
+              'text-primary-400'
+            }`}>
+              {formatTime(timerState.elapsedTime)}
+            </span>
+            {timerState.timeLimit && (
+              <span className="text-gray-400 text-xs font-mono">
+                / {formatTime(timerState.timeLimit)}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden sm:flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary-500 p-2 rounded-lg">
             <Target className="w-5 h-5 text-white" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-100 font-mono">OBJETIVO {challenge.id}</h2>
-            <div className="flex items-center gap-2 mt-1">
-              <Search className="w-3 h-3 text-primary-400" />
-              <span className="text-xs text-primary-400 font-mono">ANÁLISIS DE DATOS</span>
-              <AlertTriangle className="w-3 h-3 text-yellow-400" />
-            </div>
+            <span className="text-xs text-primary-400 font-mono">ANÁLISIS DE DATOS</span>
           </div>
         </div>
         <Timer

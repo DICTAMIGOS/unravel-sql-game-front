@@ -52,7 +52,7 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
       <div className="mb-4">
         <div className="flex items-center gap-2 mb-2">
           <AlertTriangle className="w-5 h-5 text-yellow-400" />
-          <h2 className="text-xl font-bold text-gray-100">
+          <h2 className="text-xl font-bold text-gray-100 font-mono">
             NIVEL DE SEGURIDAD
           </h2>
         </div>

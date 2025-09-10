@@ -8,6 +8,41 @@ import { Login } from './components/Login';
 
 type GameView = 'menu' | 'level' | 'login';
 
+const HeaderButton = ({ isLogin, onBack, onLogin, isMobile }: {
+  isLogin: boolean;
+  onBack: () => void;
+  onLogin: () => void;
+  isMobile: boolean;
+}) => {
+  const buttonClass = isMobile 
+    ? "bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-1 border border-gray-600 cursor-pointer text-sm"
+    : "bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-gray-600 cursor-pointer";
+
+  return isLogin ? (
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={onBack}
+      className={buttonClass}
+    >
+      <ArrowLeft className="w-4 h-4" />
+      <span className={isMobile ? "hidden xs:inline" : ""}>Volver</span>
+    </motion.button>
+  ) : (
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={onLogin}
+      className={buttonClass}
+    >
+      <Shield className="w-4 h-4" />
+      <span className={isMobile ? "hidden xs:inline" : ""}>
+        {isMobile ? "Acceso" : "Acceso Seguro"}
+      </span>
+    </motion.button>
+  );
+};
+
 function App() {
   const [currentView, setCurrentView] = useState<GameView>('menu');
   const [selectedLevelId, setSelectedLevelId] = useState<number>(1);
@@ -39,7 +74,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
-      {/* Background Pattern */}
       <div className="fixed inset-0 opacity-5">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-accent-500/10" />
         <div className="absolute inset-0" style={{
@@ -49,8 +83,46 @@ function App() {
       </div>
 
       <header className="relative z-10 bg-gray-800/80 backdrop-blur-sm border-b border-gray-700">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="block sm:hidden">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-primary-600 rounded-lg relative">
+                  <Shield className="w-5 h-5 text-white" />
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-gray-100">Unravel</h1>
+                  <div className="text-xs text-primary-400 font-mono">SISTEMA ACTIVO</div>
+                </div>
+              </div>
+              <HeaderButton 
+                isLogin={currentView === 'login'}
+                onBack={handleBackFromLogin}
+                onLogin={handleShowLogin}
+                isMobile={true}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Search className="w-3 h-3 text-primary-400" />
+                <span className="text-xs text-primary-400 font-mono">INVESTIGACIÓN</span>
+                <AlertTriangle className="w-3 h-3 text-yellow-400" />
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-gray-400 font-mono">
+                  {currentView === 'level' ? 'MISIÓN ACTIVA' : 'STANDBY'}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {currentView === 'level' ? `Cap. ${currentLevel}` : 'Operativo'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary-600 rounded-lg relative">
                 <Shield className="w-6 h-6 text-white" />
@@ -74,27 +146,12 @@ function App() {
                   {currentView === 'level' ? `Capítulo ${currentLevel}` : 'Estado: Operativo'}
                 </div>
               </div>
-              {currentView === 'login' ? (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleBackFromLogin}
-                  className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-gray-600 cursor-pointer"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Volver
-                </motion.button>
-              ) : (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleShowLogin}
-                  className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-gray-600 cursor-pointer"
-                >
-                  <Shield className="w-4 h-4" />
-                  Acceso Seguro
-                </motion.button>
-              )}
+              <HeaderButton 
+                isLogin={currentView === 'login'}
+                onBack={handleBackFromLogin}
+                onLogin={handleShowLogin}
+                isMobile={false}
+              />
             </div>
           </div>
         </div>
