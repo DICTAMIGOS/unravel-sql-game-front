@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Trophy, Home, Shield, Search, AlertTriangle, Target, FileText } from 'lucide-react';
-import type { Level } from '../types/game';
-import { ChallengeCard } from './ChallengeCard';
+import type { Level } from '../../types/game';
+import { ChallengeCard } from '../../components/ChallengeCard';
 
-interface LevelGameProps {
+interface GameViewProps {
   level: Level;
   selectedDifficulty: 'easy' | 'medium' | 'hard';
   onBack: () => void;
@@ -12,7 +12,7 @@ interface LevelGameProps {
   className?: string;
 }
 
-export const LevelGame: React.FC<LevelGameProps> = ({
+export const GameView: React.FC<GameViewProps> = ({
   level,
   selectedDifficulty,
   onBack,

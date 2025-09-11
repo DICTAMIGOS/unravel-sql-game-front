@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Lock, Eye, EyeOff, Search, Shield, Fingerprint, AlertCircle } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 
-interface LoginProps {
+interface AuthViewProps {
   onBack: () => void;
 }
 
-export const Login: React.FC<LoginProps> = ({ onBack }) => {
+export const AuthView: React.FC<AuthViewProps> = ({ onBack }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
