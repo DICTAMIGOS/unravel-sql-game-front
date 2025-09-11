@@ -32,3 +32,38 @@ export interface TimerState {
   elapsedTime: number;
   timeLimit?: number;
 }
+
+export interface User {
+  id: string;
+  username: string;
+  email?: string;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+
+export interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+export interface RegisterCredentials {
+  username: string;
+  password: string;
+  email?: string;
+}
+
+export interface AuthResponse {
+  msg: string;
+  user: User;
+  access_token: string;
+  refresh_token?: string;
+}
+
+export interface RefreshResponse {
+  msg: string;
+  access_token: string;
+}

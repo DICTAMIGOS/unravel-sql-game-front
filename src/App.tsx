@@ -1,34 +1,57 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Shield, Search, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Shield, Search, AlertTriangle, LogOut } from 'lucide-react';
 import { useGameState } from './hooks/useGameState';
+import { useAuth } from './hooks/useAuth';
 import { LevelSelector } from './components/LevelSelector';
 import { LevelGame } from './components/LevelGame';
 import { Login } from './components/Login';
 
 type GameView = 'menu' | 'level' | 'login';
 
-const HeaderButton = ({ isLogin, onBack, onLogin, isMobile }: {
+const HeaderButton = ({ isLogin, onBack, onLogin, onLogout, isAuthenticated, isMobile }: {
   isLogin: boolean;
   onBack: () => void;
   onLogin: () => void;
+  onLogout: () => void;
+  isAuthenticated: boolean;
   isMobile: boolean;
 }) => {
   const buttonClass = isMobile 
     ? "bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-1 border border-gray-600 cursor-pointer text-sm"
     : "bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-gray-600 cursor-pointer";
 
-  return isLogin ? (
-    <motion.button
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      onClick={onBack}
-      className={buttonClass}
-    >
-      <ArrowLeft className="w-4 h-4" />
-      <span className={isMobile ? "hidden xs:inline" : ""}>Volver</span>
-    </motion.button>
-  ) : (
+  if (isLogin) {
+    return (
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={onBack}
+        className={buttonClass}
+      >
+        <ArrowLeft className="w-4 h-4" />
+        <span className={isMobile ? "hidden xs:inline" : ""}>Volver</span>
+      </motion.button>
+    );
+  }
+
+  if (isAuthenticated) {
+    return (
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={onLogout}
+        className={buttonClass}
+      >
+        <LogOut className="w-4 h-4" />
+        <span className={isMobile ? "hidden xs:inline" : ""}>
+          {isMobile ? "Salir" : "Cerrar Sesión"}
+        </span>
+      </motion.button>
+    );
+  }
+
+  return (
     <motion.button
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
@@ -47,8 +70,19 @@ function App() {
   const [currentView, setCurrentView] = useState<GameView>('menu');
   const [selectedLevelId, setSelectedLevelId] = useState<number>(1);
   const { levels, currentLevel, completeLevel, gameProgress, setDifficulty } = useGameState();
+  const { isAuthenticated, isLoading, logout } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      setCurrentView('login');
+    }
+  }, [isAuthenticated, isLoading]);
 
   const handleLevelSelect = (levelId: number) => {
+    if (!isAuthenticated) {
+      setCurrentView('login');
+      return;
+    }
     setSelectedLevelId(levelId);
     setCurrentView('level');
   };
@@ -65,12 +99,28 @@ function App() {
     setCurrentView('menu');
   };
 
+  const handleLogout = async () => {
+    await logout();
+    setCurrentView('login');
+  };
+
   const handleLevelComplete = (levelId: number, totalTime: number) => {
     completeLevel(levelId, totalTime);
   };
 
 
   const selectedLevel = levels.find(level => level.id === selectedLevelId);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-400 font-mono">Verificando credenciales...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
@@ -101,6 +151,8 @@ function App() {
                 isLogin={currentView === 'login'}
                 onBack={handleBackFromLogin}
                 onLogin={handleShowLogin}
+                onLogout={handleLogout}
+                isAuthenticated={isAuthenticated}
                 isMobile={true}
               />
             </div>
@@ -150,6 +202,8 @@ function App() {
                 isLogin={currentView === 'login'}
                 onBack={handleBackFromLogin}
                 onLogin={handleShowLogin}
+                onLogout={handleLogout}
+                isAuthenticated={isAuthenticated}
                 isMobile={false}
               />
             </div>

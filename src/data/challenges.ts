@@ -28,7 +28,7 @@ export const challengesData = {
           "level": 1,
           "template": "SELECT s.nombre, COUNT(m.id) as total_movimientos FROM sospechosos s JOIN movimientos m ON s.id = m.sospechoso_id GROUP BY s.id, s.nombre ___ COUNT(m.id) > (SELECT ___(*) FROM movimientos)",
           "solution": "SELECT s.nombre, COUNT(m.id) as total_movimientos FROM sospechosos s JOIN movimientos m ON s.id = m.sospechoso_id GROUP BY s.id, s.nombre HAVING COUNT(m.id) > (SELECT AVG(*) FROM movimientos)"
-        }
+        },
       ]
     },
     {

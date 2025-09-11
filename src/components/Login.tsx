@@ -1,26 +1,43 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Lock, Eye, EyeOff, Search, Shield, Fingerprint } from 'lucide-react';
+import { User, Lock, Eye, EyeOff, Search, Shield, Fingerprint, AlertCircle } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 interface LoginProps {
   onBack: () => void;
 }
 
-export const Login: React.FC<LoginProps> = () => {
+export const Login: React.FC<LoginProps> = ({ onBack }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const { login, register, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setError(null);
+    
+    try {
+      await login({ username, password });
+      onBack();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Error de autenticación');
+    }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setError(null);
+    
+    try {
+      await register({ username, password });
+      onBack();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Error de registro');
+    }
   };
 
   return (
@@ -69,6 +86,17 @@ export const Login: React.FC<LoginProps> = () => {
             </div>
           </div>
 
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-900/50 border border-red-700 rounded-lg p-4 flex items-center gap-3"
+            >
+              <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span className="text-red-300 text-sm">{error}</span>
+            </motion.div>
+          )}
+
           <form onSubmit={isRegistering ? handleRegister : handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="username" className="flex text-sm font-medium text-gray-300 mb-2 items-center gap-2">
@@ -90,6 +118,7 @@ export const Login: React.FC<LoginProps> = () => {
                 />
               </div>
             </div>
+            
             <div>
               <label htmlFor="password" className="flex text-sm font-medium text-gray-300 mb-2 items-center gap-2">
                 <Shield className="w-4 h-4 text-primary-400" />
