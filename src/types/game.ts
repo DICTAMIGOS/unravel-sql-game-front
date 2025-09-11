@@ -7,11 +7,32 @@ export interface SQLChallenge {
   solution: string;
 }
 
+export interface StoryImage {
+  id: string;
+  url: string;
+  caption?: string;
+  order: number;
+}
+
+export interface ChallengeSequence {
+  id: string;
+  title: string;
+  description: string;
+  challenges: SQLChallenge[];
+  order: number;
+}
+
+export interface StoryStep {
+  type: 'image' | 'sequence';
+  order: number;
+  data: StoryImage | ChallengeSequence;
+}
+
 export interface Level {
   id: number;
   name: string;
   description: string;
-  challenges: SQLChallenge[];
+  storySteps: StoryStep[];
   unlocked: boolean;
   completed: boolean;
   bestTime?: number;

@@ -137,10 +137,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </p>
 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400 font-mono">
-                      {level.challenges.length > 0 && `${level.challenges.length} OBJETIVOS`}
-                    </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400 font-mono">
+                    {level.storySteps.length > 0 && `${level.storySteps.length} ELEMENTOS`}
+                  </span>
                     {level.completed && (
                       <span className="text-xs text-green-400 font-medium font-mono">
                         MISIÓN EXITOSA

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Trophy, Home, Shield, Search, AlertTriangle, Target, FileText } from 'lucide-react';
-import type { Level } from '../../types/game';
+import { ArrowLeft, Trophy, Home, Search, Target } from 'lucide-react';
+import type { Level, StoryImage, ChallengeSequence } from '../../types/game';
+import { StoryImage as StoryImageComponent } from '../../components/StoryImage';
 import { ChallengeCard } from '../../components/ChallengeCard';
 
 interface GameViewProps {
@@ -19,14 +20,18 @@ export const GameView: React.FC<GameViewProps> = ({
   onLevelComplete,
   className = ''
 }) => {
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [currentChallengeIndex, setCurrentChallengeIndex] = useState(0);
   const [challengeTimes, setChallengeTimes] = useState<number[]>([]);
   const [isLevelCompleted, setIsLevelCompleted] = useState(false);
   const [totalLevelTime, setTotalLevelTime] = useState(0);
 
-  const currentChallenge = level.challenges[currentChallengeIndex];
+  const currentStep = level.storySteps[currentStepIndex];
+  const currentSequence = currentStep?.type === 'sequence' ? currentStep.data as ChallengeSequence : null;
+  const currentChallenge = currentSequence?.challenges[currentChallengeIndex];
 
   useEffect(() => {
+    setCurrentStepIndex(0);
     setCurrentChallengeIndex(0);
     setChallengeTimes([]);
     setIsLevelCompleted(false);
@@ -40,15 +45,31 @@ export const GameView: React.FC<GameViewProps> = ({
     const newTotalTime = newChallengeTimes.reduce((sum, t) => sum + t, 0);
     setTotalLevelTime(newTotalTime);
 
-    if (currentChallengeIndex === level.challenges.length - 1) {
-      setIsLevelCompleted(true);
-      onLevelComplete(level.id, newTotalTime);
+    // Check if we need to move to next challenge in sequence or next step
+    if (currentSequence && currentChallengeIndex < currentSequence.challenges.length - 1) {
+      // Move to next challenge in current sequence
+      setCurrentChallengeIndex(prev => prev + 1);
+    } else {
+      // Sequence completed, move to next step
+      setCurrentChallengeIndex(0);
+      setChallengeTimes([]);
+      if (currentStepIndex < level.storySteps.length - 1) {
+        setCurrentStepIndex(prev => prev + 1);
+      } else {
+        // Level completed
+        setIsLevelCompleted(true);
+        onLevelComplete(level.id, newTotalTime);
+      }
     }
   };
 
-  const handleNextChallenge = () => {
-    if (currentChallengeIndex < level.challenges.length - 1) {
-      setCurrentChallengeIndex(prev => prev + 1);
+  const handleNextStep = () => {
+    if (currentStepIndex < level.storySteps.length - 1) {
+      setCurrentStepIndex(prev => prev + 1);
+    } else {
+      // Level completed (no more steps)
+      setIsLevelCompleted(true);
+      onLevelComplete(level.id, totalLevelTime);
     }
   };
 
@@ -56,38 +77,6 @@ export const GameView: React.FC<GameViewProps> = ({
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const getAverageTime = (): number => {
-    if (challengeTimes.length === 0) return 0;
-    return Math.round(challengeTimes.reduce((sum, time) => sum + time, 0) / challengeTimes.length);
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'text-green-400 bg-green-900/20 border-green-600';
-      case 'medium': return 'text-yellow-400 bg-yellow-900/20 border-yellow-600';
-      case 'hard': return 'text-red-400 bg-red-900/20 border-red-600';
-      default: return 'text-gray-400 bg-gray-800 border-gray-600';
-    }
-  };
-
-  const getDifficultyLabel = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'NIVEL 1';
-      case 'medium': return 'NIVEL 2';
-      case 'hard': return 'NIVEL 3';
-      default: return 'DESCONOCIDO';
-    }
-  };
-
-  const getDifficultyIcon = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return <Shield className="w-4 h-4" />;
-      case 'medium': return <Target className="w-4 h-4" />;
-      case 'hard': return <AlertTriangle className="w-4 h-4" />;
-      default: return <FileText className="w-4 h-4" />;
-    }
   };
 
   const getTimeLimitForDifficulty = (difficulty: string) => {
@@ -103,39 +92,7 @@ export const GameView: React.FC<GameViewProps> = ({
     <div className={`min-h-screen bg-gray-900 ${className}`}>
       <div className="bg-gray-800 border-b border-gray-700 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          {/* Mobile Layout */}
-          <div className="block sm:hidden">
-            <div className="flex items-center justify-between">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={onBack}
-                className="flex items-center gap-1 text-gray-300 hover:text-gray-100 transition-colors cursor-pointer bg-gray-800 hover:bg-gray-700 px-2 py-1 rounded-lg border border-gray-600 text-sm"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span className="hidden xs:inline">Volver</span>
-              </motion.button>
-              
-              <div className="flex items-center gap-2">
-                <div className="bg-primary-500 p-1.5 rounded-lg">
-                  <Search className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold text-gray-100 font-mono">
-                    MISIÓN {level.id}
-                  </h1>
-                </div>
-              </div>
-              
-              <span className={`px-2 py-1 rounded text-xs font-medium font-mono border ${getDifficultyColor(selectedDifficulty)} flex items-center gap-1`}>
-                {getDifficultyIcon(selectedDifficulty)}
-                {getDifficultyLabel(selectedDifficulty)}
-              </span>
-            </div>
-          </div>
-
-          {/* Desktop Layout */}
-          <div className="hidden sm:flex items-center justify-between">
+          <div className="flex items-center justify-between">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -157,11 +114,6 @@ export const GameView: React.FC<GameViewProps> = ({
                 <span className="text-xs text-primary-400 font-mono">INVESTIGACIÓN ACTIVA</span>
               </div>
             </div>
-            
-            <span className={`px-3 py-1 rounded-lg text-xs font-medium font-mono border ${getDifficultyColor(selectedDifficulty)} flex items-center gap-1`}>
-              {getDifficultyIcon(selectedDifficulty)}
-              {getDifficultyLabel(selectedDifficulty)}
-            </span>
           </div>
         </div>
       </div>
@@ -198,35 +150,13 @@ export const GameView: React.FC<GameViewProps> = ({
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Target className="w-4 h-4 text-primary-400" />
-                      <span className="text-xs text-primary-400 font-mono">TIEMPO TOTAL</span>
-                    </div>
-                    <div className="text-2xl font-bold text-primary-400 font-mono">
-                      {formatTime(totalLevelTime)}
-                    </div>
+                <div className="bg-gray-700 border border-gray-600 rounded-lg p-4 mb-8">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="w-4 h-4 text-primary-400" />
+                    <span className="text-xs text-primary-400 font-mono">TIEMPO TOTAL</span>
                   </div>
-
-                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <AlertTriangle className="w-4 h-4 text-yellow-400" />
-                      <span className="text-xs text-yellow-400 font-mono">PROMEDIO</span>
-                    </div>
-                    <div className="text-2xl font-bold text-yellow-400 font-mono">
-                      {formatTime(getAverageTime())}
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      {getDifficultyIcon(selectedDifficulty)}
-                      <span className="text-xs text-green-400 font-mono">SEGURIDAD</span>
-                    </div>
-                    <div className="text-2xl font-bold text-green-400 font-mono">
-                      {getDifficultyLabel(selectedDifficulty)}
-                    </div>
+                  <div className="text-2xl font-bold text-primary-400 font-mono">
+                    {formatTime(totalLevelTime)}
                   </div>
                 </div>
 
@@ -243,22 +173,68 @@ export const GameView: React.FC<GameViewProps> = ({
                 </div>
               </div>
             </motion.div>
-          ) : (
+          ) : currentStep ? (
             <motion.div
-              key="challenge"
+              key={`step-${currentStepIndex}`}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <ChallengeCard
-                challenge={currentChallenge}
-                timeLimit={getTimeLimitForDifficulty(selectedDifficulty)}
-                onComplete={handleChallengeComplete}
-                onNext={handleNextChallenge}
-              />
+              {currentStep.type === 'image' ? (
+                <StoryImageComponent
+                  image={currentStep.data as StoryImage}
+                  onNext={handleNextStep}
+                />
+              ) : currentSequence && currentChallenge ? (
+                <div>
+                  {/* Sequence Header */}
+                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 mb-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="bg-primary-500 p-2 rounded-lg">
+                        <Target className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-gray-100 font-mono">
+                          {currentSequence.title}
+                        </h2>
+                        <p className="text-gray-400 text-sm">
+                          {currentSequence.description}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Progress */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-400 font-mono">
+                        Challenge {currentChallengeIndex + 1} / {currentSequence.challenges.length}
+                      </span>
+                      <div className="flex gap-1">
+                        {currentSequence.challenges.map((_, index) => (
+                          <div
+                            key={index}
+                            className={`w-2 h-2 rounded-full ${
+                              index <= currentChallengeIndex
+                                ? 'bg-primary-500'
+                                : 'bg-gray-600'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Challenge Card */}
+                  <ChallengeCard
+                    challenge={currentChallenge}
+                    timeLimit={getTimeLimitForDifficulty(selectedDifficulty)}
+                    onComplete={handleChallengeComplete}
+                    onNext={() => {}} // No need for next button, handled automatically
+                  />
+                </div>
+              ) : null}
             </motion.div>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
     </div>

@@ -20,7 +20,7 @@ export const useGameState = () => {
       id: levelData.id,
       name: levelData.name,
       description: levelData.description,
-      challenges: [...levelData.challenges],
+      storySteps: JSON.parse(JSON.stringify(levelData.storySteps || [])),
       unlocked: index === 0, // Only first chapter is unlocked for MVP
       completed: false,
       bestTime: undefined
