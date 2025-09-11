@@ -11,8 +11,21 @@ class AuthService {
     localStorage.setItem('access_token', token);
   }
 
+  private setStoredUser(user: User): void {
+    localStorage.setItem('user_data', JSON.stringify(user));
+  }
+
   private removeStoredToken(): void {
     localStorage.removeItem('access_token');
+  }
+
+  private removeStoredUser(): void {
+    localStorage.removeItem('user_data');
+  }
+
+  getStoredUser(): User | null {
+    const userData = localStorage.getItem('user_data');
+    return userData ? JSON.parse(userData) : null;
   }
 
   private async makeRequest<T>(
@@ -47,6 +60,7 @@ class AuthService {
     });
     
     this.setStoredToken(response.access_token);
+    this.setStoredUser(response.user);
     return response;
   }
 
@@ -57,6 +71,7 @@ class AuthService {
     });
     
     this.setStoredToken(response.access_token);
+    this.setStoredUser(response.user);
     return response;
   }
 
@@ -78,6 +93,7 @@ class AuthService {
     const result = await response.json();
     
     this.removeStoredToken();
+    this.removeStoredUser();
     return result;
   }
 

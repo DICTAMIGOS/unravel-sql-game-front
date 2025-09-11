@@ -4,6 +4,9 @@ import { ArrowLeft, Trophy, Home, Search, Target } from 'lucide-react';
 import type { Level, StoryImage, ChallengeSequence } from '../../types/game';
 import { StoryImage as StoryImageComponent } from '../../components/StoryImage';
 import { ChallengeCard } from '../../components/ChallengeCard';
+import { SequenceRanking } from '../../components/SequenceRanking';
+import { recordService } from '../../services/recordService';
+import { useAuth } from '../../hooks/useAuth';
 
 interface GameViewProps {
   level: Level;
@@ -23,8 +26,18 @@ export const GameView: React.FC<GameViewProps> = ({
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [currentChallengeIndex, setCurrentChallengeIndex] = useState(0);
   const [challengeTimes, setChallengeTimes] = useState<number[]>([]);
+  const [challengeErrors, setChallengeErrors] = useState<number[]>([]);
   const [isLevelCompleted, setIsLevelCompleted] = useState(false);
   const [totalLevelTime, setTotalLevelTime] = useState(0);
+  const [accumulatedTime, setAccumulatedTime] = useState(0);
+  const [showRanking, setShowRanking] = useState(false);
+  const [lastSequenceData, setLastSequenceData] = useState<{
+    id: string;
+    title: string;
+    time: number;
+    errors: number;
+  } | null>(null);
+  const { user } = useAuth();
 
   const currentStep = level.storySteps[currentStepIndex];
   const currentSequence = currentStep?.type === 'sequence' ? currentStep.data as ChallengeSequence : null;
@@ -34,13 +47,19 @@ export const GameView: React.FC<GameViewProps> = ({
     setCurrentStepIndex(0);
     setCurrentChallengeIndex(0);
     setChallengeTimes([]);
+    setChallengeErrors([]);
     setIsLevelCompleted(false);
     setTotalLevelTime(0);
+    setAccumulatedTime(0);
+    setShowRanking(false);
+    setLastSequenceData(null);
   }, [level.id]);
 
-  const handleChallengeComplete = (time: number) => {
+  const handleChallengeComplete = async (time: number, errorCount: number) => {
     const newChallengeTimes = [...challengeTimes, time];
+    const newChallengeErrors = [...challengeErrors, errorCount];
     setChallengeTimes(newChallengeTimes);
+    setChallengeErrors(newChallengeErrors);
 
     const newTotalTime = newChallengeTimes.reduce((sum, t) => sum + t, 0);
     setTotalLevelTime(newTotalTime);
@@ -50,15 +69,55 @@ export const GameView: React.FC<GameViewProps> = ({
       // Move to next challenge in current sequence
       setCurrentChallengeIndex(prev => prev + 1);
     } else {
-      // Sequence completed, move to next step
+      // Sequence completed, send record to API
+      if (currentSequence && user) {
+        const totalSequenceTime = newChallengeTimes.reduce((sum, t) => sum + t, 0);
+        const totalSequenceErrors = newChallengeErrors.reduce((sum, e) => sum + e, 0);
+        
+        try {
+          const result = await recordService.createRecord({
+            time: totalSequenceTime,
+            level: parseInt(currentSequence.id), // Use sequence ID as level number
+            difficulty: selectedDifficulty,
+            errorCount: totalSequenceErrors
+          });
+          
+          if (result.success) {
+            console.log('Record created successfully:', result.recordId);
+          } else {
+            console.error('Failed to create record:', result.message);
+          }
+        } catch (error) {
+          console.error('Failed to create record:', error);
+        }
+      }
+
       setCurrentChallengeIndex(0);
       setChallengeTimes([]);
-      if (currentStepIndex < level.storySteps.length - 1) {
-        setCurrentStepIndex(prev => prev + 1);
+      setChallengeErrors([]);
+      
+      // Accumulate the sequence time
+      const newAccumulatedTime = accumulatedTime + newTotalTime;
+      setAccumulatedTime(newAccumulatedTime);
+      
+      // Show ranking for completed sequence
+      if (currentSequence) {
+        setLastSequenceData({
+          id: currentSequence.id,
+          title: currentSequence.title,
+          time: newTotalTime,
+          errors: newChallengeErrors.reduce((sum, e) => sum + e, 0)
+        });
+        setShowRanking(true);
       } else {
-        // Level completed
-        setIsLevelCompleted(true);
-        onLevelComplete(level.id, newTotalTime);
+        // If no sequence, continue normally
+        if (currentStepIndex < level.storySteps.length - 1) {
+          setCurrentStepIndex(prev => prev + 1);
+        } else {
+          // Level completed
+          setIsLevelCompleted(true);
+          onLevelComplete(level.id, newAccumulatedTime);
+        }
       }
     }
   };
@@ -69,7 +128,20 @@ export const GameView: React.FC<GameViewProps> = ({
     } else {
       // Level completed (no more steps)
       setIsLevelCompleted(true);
-      onLevelComplete(level.id, totalLevelTime);
+      onLevelComplete(level.id, accumulatedTime);
+    }
+  };
+
+  const handleRankingNext = () => {
+    setShowRanking(false);
+    setLastSequenceData(null);
+    
+    if (currentStepIndex < level.storySteps.length - 1) {
+      setCurrentStepIndex(prev => prev + 1);
+    } else {
+      // Level completed
+      setIsLevelCompleted(true);
+      onLevelComplete(level.id, accumulatedTime);
     }
   };
 
@@ -120,7 +192,15 @@ export const GameView: React.FC<GameViewProps> = ({
 
       <div className="max-w-4xl mx-auto px-6 py-8">
         <AnimatePresence mode="wait">
-          {isLevelCompleted ? (
+          {showRanking && lastSequenceData ? (
+            <SequenceRanking
+              key="ranking"
+              sequenceTitle={lastSequenceData.title}
+              level={parseInt(lastSequenceData.id)}
+              difficulty={selectedDifficulty}
+              onNext={handleRankingNext}
+            />
+          ) : isLevelCompleted ? (
             <motion.div
               key="completion"
               initial={{ opacity: 0, scale: 0.9 }}

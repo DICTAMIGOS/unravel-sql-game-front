@@ -42,7 +42,6 @@ export interface GameProgress {
   currentLevel: number;
   completedLevels: number[];
   totalTime: number;
-  levelTimes: { [levelId: number]: number };
   achievements: string[];
   selectedDifficulty: 'easy' | 'medium' | 'hard';
 }

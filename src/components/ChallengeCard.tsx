@@ -8,7 +8,7 @@ import { Timer } from './Timer';
 interface ChallengeCardProps {
   challenge: SQLChallenge;
   timeLimit: number;
-  onComplete: (time: number) => void;
+  onComplete: (time: number, errorCount: number) => void;
   onNext: () => void;
   className?: string;
 }
@@ -23,6 +23,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
   const [currentSolution, setCurrentSolution] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
   const [isIncorrect, setIsIncorrect] = useState(false);
+  const [errorCount, setErrorCount] = useState(0);
   const [timerState, setTimerState] = useState({
     isRunning: true,
     startTime: Date.now(),
@@ -35,6 +36,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     setCurrentSolution('');
     setIsCompleted(false);
     setIsIncorrect(false);
+    setErrorCount(0);
     setTimerState({
       isRunning: true,
       startTime: Date.now(),
@@ -52,10 +54,11 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     if (normalizedSolution === normalizedCorrect) {
       setIsCompleted(true);
       setTimerState(prev => ({ ...prev, isRunning: false }));
-      onComplete(timerState.elapsedTime);
+      onComplete(timerState.elapsedTime, errorCount);
     } else {
       setIsIncorrect(true);
       setIsCompleted(false);
+      setErrorCount(prev => prev + 1);
     }
   };
 

@@ -9,7 +9,6 @@ export const useGameState = () => {
     currentLevel: 1,
     completedLevels: [],
     totalTime: 0,
-    levelTimes: {},
     achievements: [],
     selectedDifficulty: 'easy'
   });
@@ -43,7 +42,7 @@ export const useGameState = () => {
             ...level,
             unlocked: level.id === 1, // Only first chapter unlocked for MVP
             completed: parsed.completedLevels.includes(level.id),
-            bestTime: parsed.levelTimes[level.id]
+            bestTime: undefined // No longer tracking individual level times
           }))
         );
       } catch (error) {
@@ -62,11 +61,7 @@ export const useGameState = () => {
     const newProgress: GameProgress = {
       ...gameProgress,
       completedLevels: [...gameProgress.completedLevels, levelId],
-      totalTime: gameProgress.totalTime + time,
-      levelTimes: {
-        ...gameProgress.levelTimes,
-        [levelId]: time
-      }
+      totalTime: gameProgress.totalTime + time
     };
 
     // For MVP, no additional chapters are unlocked
@@ -101,7 +96,6 @@ export const useGameState = () => {
       currentLevel: 1,
       completedLevels: [],
       totalTime: 0,
-      levelTimes: {},
       achievements: [],
       selectedDifficulty: 'easy'
     });

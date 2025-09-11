@@ -19,7 +19,7 @@ export const challengesData = {
           "type": "sequence",
           "order": 3,
           "data": {
-            "id": "seq-1-1",
+            "id": "1",
             "title": "Secuencia 1: Identificación del Sospechoso Principal",
             "description": "Analiza la base de datos para encontrar al sospechoso principal",
             "order": 3,
@@ -57,7 +57,7 @@ export const challengesData = {
           "type": "sequence",
           "order": 5,
           "data": {
-            "id": "seq-1-2",
+            "id": "2",
             "title": "Secuencia 2: Análisis de Patrones Sospechosos",
             "description": "Identifica patrones anómalos en los movimientos de los sospechosos",
             "order": 5,
