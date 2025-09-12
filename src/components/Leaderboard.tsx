@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Tab, Tabs } from '@heroui/tabs';
 import { motion } from 'framer-motion';
-import { Trophy, Medal, Target, Clock, AlertTriangle, Users, Zap } from 'lucide-react';
+import { Trophy, Medal, Target, AlertTriangle, Users, Zap } from 'lucide-react';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000/api';
 
@@ -14,10 +14,11 @@ interface LeaderboardUser {
 }
 
 interface LeaderboardData {
-  currentUser: LeaderboardUser;
+  currentUser: LeaderboardUser | null;
   difficulty: 'easy' | 'medium' | 'hard';
   level: null | number;
-  top3: LeaderboardUser[];
+  top5: LeaderboardUser[];
+  totalPlayers: number;
 }
 
 type Difficulty = 'easy' | 'medium' | 'hard';
@@ -40,12 +41,24 @@ const getDifficultyIcon = (difficulty: Difficulty) => {
   }
 };
 
-const getMedalIcon = (position: number) => {
+const getPositionIcon = (position: number) => {
   switch (position) {
     case 1: return <Trophy className="w-5 h-5 text-yellow-400" />;
     case 2: return <Medal className="w-5 h-5 text-gray-300" />;
-    case 3: return <Medal className="w-5 h-5 text-orange-400" />;
-    default: return <Target className="w-4 h-4 text-gray-400" />;
+    case 3: return <Medal className="w-5 h-5 text-amber-600" />;
+    default: return <span className="text-gray-400 font-mono text-sm">#{position}</span>;
+  }
+};
+
+const getPositionColor = (position: number, isCurrentUser: boolean) => {
+  if (isCurrentUser) {
+    return 'bg-gray-700 border-gray-500';
+  }
+  switch (position) {
+    case 1: return 'bg-yellow-900/20 border-yellow-600';
+    case 2: return 'bg-gray-800/50 border-gray-600';
+    case 3: return 'bg-amber-900/20 border-amber-600';
+    default: return 'bg-gray-800 border-gray-700';
   }
 };
 
@@ -111,8 +124,8 @@ const LeaderboardTab: React.FC<{
     );
   }
 
-  // Empty state cuando no hay usuarios en el top 3
-  if (!data.top3 || data.top3.length === 0) {
+  // Empty state cuando no hay usuarios en el top 5
+  if (!data.top5 || data.top5.length === 0) {
     return (
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -160,102 +173,88 @@ const LeaderboardTab: React.FC<{
         </div>
       </div>
       
-      {/* Top 3 */}
+      {/* Top 5 Ranking */}
       <div className="space-y-3 mb-6">
-        {data.top3.map((user, index) => (
-          <motion.div 
-            key={`${user.username}-${user.position}`}
+        {data.top5.map((user, index) => (
+          <motion.div
+            key={user.position}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
-            className={`
-              flex justify-between items-center p-4 rounded-lg border transition-all duration-200
-              ${user.isCurrentUser 
-                ? 'bg-gray-700 border-gray-500 ring-1 ring-gray-400' 
-                : 'bg-gray-800/50 border-gray-700 hover:bg-gray-800/70'
-              }
-            `}
+            className={`flex items-center justify-between p-4 rounded-lg border transition-all duration-200 ${getPositionColor(user.position, user.isCurrentUser)}`}
           >
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                {getMedalIcon(user.position)}
+                {getPositionIcon(user.position)}
                 <span className="text-gray-300 font-mono text-sm">
-                  #{user.position}
+                  {user.position}º
                 </span>
               </div>
+              
               <div>
-                <div className="flex items-center gap-2">
-                  <span className={`font-semibold ${user.isCurrentUser ? 'text-white' : 'text-gray-200'}`}>
-                    {user.username}
+                <h3 className={`font-semibold ${user.isCurrentUser ? 'text-white' : 'text-gray-200'}`}>
+                  {user.username}
+                </h3>
+                {user.isCurrentUser && (
+                  <span className="text-xs text-gray-300 font-mono">
+                    TU POSICIÓN
                   </span>
-                  {user.isCurrentUser && (
-                    <span className="text-xs text-gray-300 font-mono bg-gray-600 px-2 py-1 rounded">
-                      TU POSICIÓN
-                    </span>
-                  )}
-                </div>
-                {user.errorCount > 0 && (
-                  <div className="text-xs text-red-400 mt-1 font-mono">
-                    {user.errorCount} error{user.errorCount !== 1 ? 'es' : ''}
-                  </div>
                 )}
               </div>
             </div>
-            <div className="text-right">
-              <div className="flex items-center gap-2 text-gray-300 font-mono text-sm">
-                <Clock className="w-4 h-4" />
-                {formatTime(user.time)}
+            
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <div className="text-gray-300 font-mono text-sm">
+                  {formatTime(user.time)}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {user.errorCount} errores
+                </div>
               </div>
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* Usuario actual si no está en el top 3 */}
-      {data.currentUser && data.currentUser.position > 3 && (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="border-t border-gray-600 pt-6"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Target className="w-4 h-4 text-gray-400" />
-            <h4 className="text-sm font-medium text-gray-300 font-mono">TU POSICIÓN</h4>
-          </div>
-          <div className="flex justify-between items-center p-4 bg-gray-700 rounded-lg border border-gray-500 ring-1 ring-gray-400">
-            <div className="flex items-center space-x-4">
+      {/* Usuario actual si no está en el top 5 */}
+      {data.currentUser && !data.top5.some(player => player.isCurrentUser) && (
+        <div className="mt-6 p-4 bg-gray-700 border border-gray-500 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                {getMedalIcon(data.currentUser.position)}
+                {getPositionIcon(data.currentUser.position)}
                 <span className="text-gray-300 font-mono text-sm">
-                  #{data.currentUser.position}
+                  {data.currentUser.position}º
                 </span>
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-white">
-                    {data.currentUser.username}
-                  </span>
-                  <span className="text-xs text-gray-300 font-mono bg-gray-600 px-2 py-1 rounded">
-                    TU POSICIÓN
-                  </span>
-                </div>
-                {data.currentUser.errorCount > 0 && (
-                  <div className="text-xs text-red-400 mt-1 font-mono">
-                    {data.currentUser.errorCount} error{data.currentUser.errorCount !== 1 ? 'es' : ''}
-                  </div>
-                )}
+                <h3 className="text-white font-semibold">
+                  {data.currentUser.username}
+                </h3>
+                <span className="text-xs text-gray-300 font-mono">
+                  TU POSICIÓN
+                </span>
               </div>
             </div>
             <div className="text-right">
-              <div className="flex items-center gap-2 text-gray-300 font-mono text-sm">
-                <Clock className="w-4 h-4" />
+              <div className="text-gray-200 font-mono text-sm">
                 {formatTime(data.currentUser.time)}
+              </div>
+              <div className="text-xs text-gray-400">
+                {data.currentUser.errorCount} errores
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
+
+      {/* Total Players Info */}
+      <div className="mt-6 text-center">
+        <p className="text-gray-400 text-sm font-mono">
+          Total de jugadores: {data.totalPlayers}
+        </p>
+      </div>
     </motion.div>
   );
 };
