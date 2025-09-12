@@ -37,10 +37,14 @@ export const GameView: React.FC<GameViewProps> = ({
     time: number;
     errors: number;
   } | null>(null);
+
   const { user } = useAuth();
 
   const currentStep = level.storySteps[currentStepIndex];
-  const currentSequence = currentStep?.type === 'sequence' ? currentStep.data as ChallengeSequence : null;
+  const currentSequence =
+    currentStep?.type === 'sequence'
+      ? (currentStep.data as ChallengeSequence)
+      : null;
   const currentChallenge = currentSequence?.challenges[currentChallengeIndex];
 
   useEffect(() => {
@@ -55,7 +59,8 @@ export const GameView: React.FC<GameViewProps> = ({
     setLastSequenceData(null);
   }, [level.id]);
 
-  const handleChallengeComplete = async (time: number, errorCount: number) => {
+  // Compatibilidad: permite onComplete(time) o onComplete(time, errorCount)
+  const handleChallengeComplete = async (time: number, errorCount: number = 0) => {
     const newChallengeTimes = [...challengeTimes, time];
     const newChallengeErrors = [...challengeErrors, errorCount];
     setChallengeTimes(newChallengeTimes);
@@ -64,61 +69,59 @@ export const GameView: React.FC<GameViewProps> = ({
     const newTotalTime = newChallengeTimes.reduce((sum, t) => sum + t, 0);
     setTotalLevelTime(newTotalTime);
 
-    // Check if we need to move to next challenge in sequence or next step
+    // ¿Siguiente reto dentro de la secuencia?
     if (currentSequence && currentChallengeIndex < currentSequence.challenges.length - 1) {
-      // Move to next challenge in current sequence
       setCurrentChallengeIndex(prev => prev + 1);
-    } else {
-      // Sequence completed, send record to API
-      if (currentSequence && user) {
-        const totalSequenceTime = newChallengeTimes.reduce((sum, t) => sum + t, 0);
-        const totalSequenceErrors = newChallengeErrors.reduce((sum, e) => sum + e, 0);
-        
-        try {
-          const result = await recordService.createRecord({
-            time: totalSequenceTime,
-            level: parseInt(currentSequence.id), // Use sequence ID as level number
-            difficulty: selectedDifficulty,
-            errorCount: totalSequenceErrors
-          });
-          
-          if (result.success) {
-            console.log('Record created successfully:', result.recordId);
-          } else {
-            console.error('Failed to create record:', result.message);
-          }
-        } catch (error) {
-          console.error('Failed to create record:', error);
-        }
-      }
+      return;
+    }
 
-      setCurrentChallengeIndex(0);
-      setChallengeTimes([]);
-      setChallengeErrors([]);
-      
-      // Accumulate the sequence time
-      const newAccumulatedTime = accumulatedTime + newTotalTime;
-      setAccumulatedTime(newAccumulatedTime);
-      
-      // Show ranking for completed sequence
-      if (currentSequence) {
-        setLastSequenceData({
-          id: currentSequence.id,
-          title: currentSequence.title,
-          time: newTotalTime,
-          errors: newChallengeErrors.reduce((sum, e) => sum + e, 0)
+    // Secuencia terminada: enviar récord y mostrar ranking
+    if (currentSequence && user) {
+      const totalSequenceTime = newChallengeTimes.reduce((sum, t) => sum + t, 0);
+      const totalSequenceErrors = newChallengeErrors.reduce((sum, e) => sum + e, 0);
+
+      try {
+        const result = await recordService.createRecord({
+          time: totalSequenceTime,
+          level: parseInt(currentSequence.id, 10), // ID de secuencia como nivel
+          difficulty: selectedDifficulty,
+          errorCount: totalSequenceErrors
         });
-        setShowRanking(true);
-      } else {
-        // If no sequence, continue normally
-        if (currentStepIndex < level.storySteps.length - 1) {
-          setCurrentStepIndex(prev => prev + 1);
-        } else {
-          // Level completed
-          setIsLevelCompleted(true);
-          onLevelComplete(level.id, newAccumulatedTime);
+        if (!result.success) {
+          console.error('Failed to create record:', result.message);
         }
+      } catch (error) {
+        console.error('Failed to create record:', error);
       }
+    }
+
+    // Reset internos de secuencia
+    setCurrentChallengeIndex(0);
+    setChallengeTimes([]);
+    setChallengeErrors([]);
+
+    // Acumular tiempo al total del nivel (mantener comportamiento original)
+    const newAccumulatedTime = accumulatedTime + newTotalTime;
+    setAccumulatedTime(newAccumulatedTime);
+
+    // Mostrar ranking de la secuencia recién terminada
+    if (currentSequence) {
+      setLastSequenceData({
+        id: currentSequence.id,
+        title: currentSequence.title,
+        time: newTotalTime,
+        errors: newChallengeErrors.reduce((sum, e) => sum + e, 0)
+      });
+      setShowRanking(true);
+      return;
+    }
+
+    // Si no era secuencia, avanzar pasos normalmente
+    if (currentStepIndex < level.storySteps.length - 1) {
+      setCurrentStepIndex(prev => prev + 1);
+    } else {
+      setIsLevelCompleted(true);
+      onLevelComplete(level.id, newAccumulatedTime);
     }
   };
 
@@ -126,7 +129,6 @@ export const GameView: React.FC<GameViewProps> = ({
     if (currentStepIndex < level.storySteps.length - 1) {
       setCurrentStepIndex(prev => prev + 1);
     } else {
-      // Level completed (no more steps)
       setIsLevelCompleted(true);
       onLevelComplete(level.id, accumulatedTime);
     }
@@ -135,11 +137,10 @@ export const GameView: React.FC<GameViewProps> = ({
   const handleRankingNext = () => {
     setShowRanking(false);
     setLastSequenceData(null);
-    
+
     if (currentStepIndex < level.storySteps.length - 1) {
       setCurrentStepIndex(prev => prev + 1);
     } else {
-      // Level completed
       setIsLevelCompleted(true);
       onLevelComplete(level.id, accumulatedTime);
     }
@@ -153,7 +154,7 @@ export const GameView: React.FC<GameViewProps> = ({
 
   const getTimeLimitForDifficulty = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return 180; 
+      case 'easy': return 180;
       case 'medium': return 120;
       case 'hard': return 60;
       default: return 180;
@@ -174,7 +175,7 @@ export const GameView: React.FC<GameViewProps> = ({
               <ArrowLeft className="w-4 h-4" />
               <span>Volver</span>
             </motion.button>
-            
+
             <div className="flex items-center gap-3">
               <div className="bg-primary-500 p-2 rounded-lg">
                 <Search className="w-5 h-5 text-white" />
@@ -196,7 +197,7 @@ export const GameView: React.FC<GameViewProps> = ({
             <SequenceRanking
               key="ranking"
               sequenceTitle={lastSequenceData.title}
-              level={parseInt(lastSequenceData.id)}
+              level={parseInt(lastSequenceData.id, 10)}
               difficulty={selectedDifficulty}
               onNext={handleRankingNext}
             />
@@ -235,6 +236,7 @@ export const GameView: React.FC<GameViewProps> = ({
                     <Target className="w-4 h-4 text-primary-400" />
                     <span className="text-xs text-primary-400 font-mono">TIEMPO TOTAL</span>
                   </div>
+                  {/* Mantengo el totalLevelTime como en tu 2.º código */}
                   <div className="text-2xl font-bold text-primary-400 font-mono">
                     {formatTime(totalLevelTime)}
                   </div>
@@ -264,6 +266,8 @@ export const GameView: React.FC<GameViewProps> = ({
               {currentStep.type === 'image' ? (
                 <StoryImageComponent
                   image={currentStep.data as StoryImage}
+                  // ✔ Soporte de globos de diálogo como en tu 1.º GameView
+                  dialogs={(currentStep.data as any).dialogs ?? []}
                   onNext={handleNextStep}
                 />
               ) : currentSequence && currentChallenge ? (
@@ -283,7 +287,7 @@ export const GameView: React.FC<GameViewProps> = ({
                         </p>
                       </div>
                     </div>
-                    
+
                     {/* Progress */}
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-gray-400 font-mono">
@@ -294,9 +298,7 @@ export const GameView: React.FC<GameViewProps> = ({
                           <div
                             key={index}
                             className={`w-2 h-2 rounded-full ${
-                              index <= currentChallengeIndex
-                                ? 'bg-primary-500'
-                                : 'bg-gray-600'
+                              index <= currentChallengeIndex ? 'bg-primary-500' : 'bg-gray-600'
                             }`}
                           />
                         ))}
@@ -308,8 +310,9 @@ export const GameView: React.FC<GameViewProps> = ({
                   <ChallengeCard
                     challenge={currentChallenge}
                     timeLimit={getTimeLimitForDifficulty(selectedDifficulty)}
+                    // Compatible con firmas antiguas y nuevas
                     onComplete={handleChallengeComplete}
-                    onNext={() => {}} // No need for next button, handled automatically
+                    onNext={() => {}} // Controlado automáticamente
                   />
                 </div>
               ) : null}

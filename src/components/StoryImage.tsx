@@ -2,18 +2,26 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, Image as ImageIcon } from 'lucide-react';
 import type { StoryImage as StoryImageType } from '../types/game';
+import ComicDialogPanel from './ComicDialogPanel';
+import type { DialogItem } from './ComicDialogPanel';
 
 interface StoryImageProps {
   image: StoryImageType;
   onNext: () => void;
   className?: string;
+  dialogs?: DialogItem[];
+  hideContinueButton?: boolean;
 }
 
 export const StoryImage: React.FC<StoryImageProps> = ({
   image,
   onNext,
-  className = ''
+  className = '',
+  dialogs = [],
+  hideContinueButton = false,
 }) => {
+  const hasDialogs = dialogs.length > 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -38,12 +46,17 @@ export const StoryImage: React.FC<StoryImageProps> = ({
                 className="w-full h-auto max-h-96 object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  // Evitar ciclo infinito verificando si ya es un fallback
-                  if (!target.src.includes('placehold.co') && !target.src.includes('via.placeholder')) {
+                  // Evitar ciclo infinito si ya es un fallback
+                  if (
+                    !target.src.includes('placehold.co') &&
+                    !target.src.includes('via.placeholder')
+                  ) {
                     target.src = `https://placehold.co/800x400/1f2937/ffffff/png?text=Imagen+${image.order}`;
                   }
                 }}
               />
+
+              {/* Badge ESCENA */}
               <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1">
                 <div className="flex items-center gap-2">
                   <ImageIcon className="w-4 h-4 text-primary-400" />
@@ -52,6 +65,19 @@ export const StoryImage: React.FC<StoryImageProps> = ({
                   </span>
                 </div>
               </div>
+
+              {/* Comic dialog overlay */}
+              {hasDialogs && (
+                <div className="absolute inset-x-4 bottom-4 z-10">
+                  <ComicDialogPanel
+                    dialogs={dialogs}
+                    intervalMs={10000}      // 10 segundos
+                    autoStart               // arranca solo
+                    className="w-full"
+                    onFinish={onNext}       // avanza al terminar la última línea
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -70,24 +96,28 @@ export const StoryImage: React.FC<StoryImageProps> = ({
           )}
 
           {/* Continue Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.3 }}
-            className="text-center"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onNext}
-              className="bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-8 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 mx-auto"
+          {!hideContinueButton && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.3 }}
+              className="text-center"
             >
-              <span>Continuar</span>
-              <ChevronRight className="w-5 h-5" />
-            </motion.button>
-          </motion.div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onNext}
+                className="bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-8 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 mx-auto"
+              >
+                <span>Continuar</span>
+                <ChevronRight className="w-5 h-5" />
+              </motion.button>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </motion.div>
   );
 };
+
+export default StoryImage;
