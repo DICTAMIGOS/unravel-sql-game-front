@@ -83,7 +83,7 @@ export const GameView: React.FC<GameViewProps> = ({
       try {
         const result = await recordService.createRecord({
           time: totalSequenceTime,
-          level: parseInt(currentSequence.id, 10), // ID de secuencia como nivel
+          level: level.id,
           difficulty: selectedDifficulty,
           errorCount: totalSequenceErrors
         });
@@ -197,7 +197,7 @@ export const GameView: React.FC<GameViewProps> = ({
             <SequenceRanking
               key="ranking"
               sequenceTitle={lastSequenceData.title}
-              level={parseInt(lastSequenceData.id, 10)}
+              level={level.id}
               difficulty={selectedDifficulty}
               onNext={handleRankingNext}
             />
@@ -267,7 +267,7 @@ export const GameView: React.FC<GameViewProps> = ({
                 <StoryImageComponent
                   image={currentStep.data as StoryImage}
                   // ✔ Soporte de globos de diálogo como en tu 1.º GameView
-                  dialogs={(currentStep.data as any).dialogs ?? []}
+                  dialogs={(currentStep.data as StoryImage & { dialogs?: { text: string }[] }).dialogs ?? []}
                   onNext={handleNextStep}
                 />
               ) : currentSequence && currentChallenge ? (
