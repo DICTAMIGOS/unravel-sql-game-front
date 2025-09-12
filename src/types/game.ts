@@ -54,7 +54,7 @@ export interface TimerState {
 }
 
 export interface User {
-  id: string;
+  uuid: string;
   username: string;
   email?: string;
 }

@@ -136,7 +136,7 @@ class AuthService {
     try {
       await this.refreshToken();
       return { 
-        user: { id: 'authenticated', username: 'User' }, 
+        user: { uuid: 'authenticated', username: 'User' }, 
         isAuthenticated: true 
       };
     } catch {

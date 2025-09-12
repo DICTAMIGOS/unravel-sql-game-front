@@ -1,76 +1,9 @@
-import { useState, useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import { useGameState } from './hooks/useGameState';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
-import { useModalContext } from './hooks/useModalContext';
-import { AppLayout } from './layouts/AppLayout';
-import { AuthView, HomeView, GameView } from './views';
-import { Leaderboard } from './components/Leaderboard';
-
-type GameView = 'menu' | 'level' | 'login';
+import { LoginPage, RegisterPage, HomePage, ChapterPage } from './pages';
 
 function App() {
-  const [currentView, setCurrentView] = useState<GameView>('menu');
-  const [selectedLevelId, setSelectedLevelId] = useState<number>(1);
-  const { levels, currentLevel, completeLevel, gameProgress, setDifficulty } = useGameState();
-  const { isAuthenticated, isLoading, logout, user } = useAuth();
-  const { openModal } = useModalContext();
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      setCurrentView('login');
-    }
-  }, [isAuthenticated, isLoading]);
-
-  const handleLevelSelect = (levelId: number) => {
-    if (!isAuthenticated) {
-      setCurrentView('login');
-      return;
-    }
-    setSelectedLevelId(levelId);
-    setCurrentView('level');
-  };
-
-  const handleBackToMenu = () => {
-    setCurrentView('menu');
-  };
-
-  const handleShowLogin = () => {
-    setCurrentView('login');
-  };
-
-  const handleBackFromLogin = () => {
-    setCurrentView('menu');
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    setCurrentView('login');
-  };
-
-  const handleLevelComplete = (levelId: number, totalTime: number) => {
-    completeLevel(levelId, totalTime);
-  };
-
-  const handleOpenLeaderboard = () => {
-    if (!user) {
-      console.error('No hay usuario autenticado');
-      return;
-    }
-    
-    console.log('Abriendo leaderboard para userId:', user.id);
-    openModal(
-      <Leaderboard userId={user.id} />,
-      {
-        title: '🏆 Clasificaciones Globales',
-        maxWidth: 'lg',
-        className: "bg-gray-800",
-      }
-    );
-  };
-
-
-  const selectedLevel = levels.find(level => level.id === selectedLevelId);
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -84,40 +17,53 @@ function App() {
   }
 
   return (
-    <AppLayout
-      currentView={currentView}
-      currentLevel={currentLevel}
-      isAuthenticated={isAuthenticated}
-      onBack={handleBackFromLogin}
-      onLogin={handleShowLogin}
-      onLogout={handleLogout}
-      onOpenLeaderboard={handleOpenLeaderboard}
-    >
-      <AnimatePresence mode="wait">
-        {currentView === 'login' ? (
-          <AuthView key="login" onBack={handleBackFromLogin} />
-        ) : currentView === 'menu' ? (
-          <HomeView
-            key="menu"
-            levels={levels}
-            currentLevel={currentLevel}
-            onLevelSelect={handleLevelSelect}
-            selectedDifficulty={gameProgress.selectedDifficulty}
-            onDifficultyChange={setDifficulty}
-          />
-        ) : (
-          selectedLevel && (
-            <GameView
-              key="level"
-              level={selectedLevel}
-              selectedDifficulty={gameProgress.selectedDifficulty}
-              onBack={handleBackToMenu}
-              onLevelComplete={handleLevelComplete}
-            />
-          )
-        )}
-      </AnimatePresence>
-    </AppLayout>
+    <Router>
+      <Routes>
+        {/* Public routes */}
+        <Route 
+          path="/login" 
+          element={
+            isAuthenticated ? <Navigate to="/home" replace /> : <LoginPage />
+          } 
+        />
+        <Route 
+          path="/register" 
+          element={
+            isAuthenticated ? <Navigate to="/home" replace /> : <RegisterPage />
+          } 
+        />
+        
+        {/* Protected routes */}
+        <Route 
+          path="/home" 
+          element={
+            isAuthenticated ? <HomePage /> : <Navigate to="/login" replace />
+          } 
+        />
+        <Route 
+          path="/chapter/:id" 
+          element={
+            isAuthenticated ? <ChapterPage /> : <Navigate to="/login" replace />
+          } 
+        />
+        
+        {/* Default redirect */}
+        <Route 
+          path="/" 
+          element={
+            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+          } 
+        />
+        
+        {/* Catch all route */}
+        <Route 
+          path="*" 
+          element={
+            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+          } 
+        />
+      </Routes>
+    </Router>
   );
 }
 

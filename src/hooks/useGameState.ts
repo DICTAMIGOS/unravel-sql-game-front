@@ -4,6 +4,7 @@ import { challengesData } from '../data/challenges';
 
 export const useGameState = () => {
   const [levels, setLevels] = useState<Level[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [gameProgress, setGameProgress] = useState<GameProgress>({
     currentLevel: 1,
@@ -15,17 +16,18 @@ export const useGameState = () => {
 
   // Initialize levels from JSON data
   useEffect(() => {
-    const initialLevels: Level[] = challengesData.levels.map((levelData, index) => ({
+    const initialLevels: Level[] = challengesData.levels.map((levelData) => ({
       id: levelData.id,
       name: levelData.name,
       description: levelData.description,
       storySteps: JSON.parse(JSON.stringify(levelData.storySteps || [])),
-      unlocked: index === 0, // Only first chapter is unlocked for MVP
+      unlocked: true, // All chapters are unlocked
       completed: false,
       bestTime: undefined
     }));
 
     setLevels(initialLevels);
+    setIsLoading(false);
   }, []);
 
   // Load game progress from localStorage
@@ -36,11 +38,11 @@ export const useGameState = () => {
         const parsed = JSON.parse(savedProgress);
         setGameProgress(parsed);
         
-        // Update levels with saved progress (only first chapter unlocked for MVP)
+        // Update levels with saved progress (all chapters unlocked)
         setLevels(prevLevels => 
           prevLevels.map(level => ({
             ...level,
-            unlocked: level.id === 1, // Only first chapter unlocked for MVP
+            unlocked: true, // All chapters are unlocked
             completed: parsed.completedLevels.includes(level.id),
             bestTime: undefined // No longer tracking individual level times
           }))
@@ -64,8 +66,8 @@ export const useGameState = () => {
       totalTime: gameProgress.totalTime + time
     };
 
-    // For MVP, no additional chapters are unlocked
-    // Future: Unlock next level when more chapters are available
+    // All chapters are already unlocked
+    // Future: Could implement progressive unlocking if desired
 
     // Update current level (stay on current level for MVP)
     setCurrentLevel(levelId);
@@ -103,8 +105,8 @@ export const useGameState = () => {
     setLevels(prevLevels =>
       prevLevels.map((level,) => ({
         ...level,
-        // NOTE: Only first chapter unlocked for MVP
-        unlocked: level.id === 1,
+        // NOTE: All chapters are unlocked
+        unlocked: true,
         completed: false,
         bestTime: undefined
       }))
@@ -122,6 +124,7 @@ export const useGameState = () => {
 
   return {
     levels,
+    isLoading,
     currentLevel,
     gameProgress,
     completeLevel,
