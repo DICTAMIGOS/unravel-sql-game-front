@@ -4,6 +4,7 @@ export interface SQLChallenge {
   description: string;
   level: number;
   template: string;
+  decimal: number;
   solution: string;
 }
 

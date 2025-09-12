@@ -4,6 +4,7 @@ import { CheckCircle, ArrowRight, X, Target, Shield, FileText, AlertTriangle } f
 import type { SQLChallenge } from '../types/game';
 import { SQLTemplate } from './SQLTemplate';
 import { Timer } from './Timer';
+import { gameService } from '../services/validateQueryService';
 
 interface ChallengeCardProps {
   challenge: SQLChallenge;
@@ -39,6 +40,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
   className = ''
 }) => {
   const [currentSolution, setCurrentSolution] = useState('');
+    const [isValidating, setIsValidating] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isIncorrect, setIsIncorrect] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
@@ -67,19 +69,33 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     });
   }, [challenge.id, timeLimit]);
 
-  const checkSolution = () => {
+  const checkSolution = async () => {
+    if (isValidating) return;
+    
     setIsIncorrect(false);
-    const normalizedSolution = currentSolution.trim().toLowerCase();
-    const normalizedCorrect  = challenge.solution.trim().toLowerCase();
+    setIsValidating(true);
 
-    if (normalizedSolution === normalizedCorrect) {
-      setIsCompleted(true);
-      setTimerState(prev => ({ ...prev, isRunning: false }));
-      onComplete(timerState.elapsedTime, errorCount);
-    } else {
+    try {
+      const result = await gameService.validateQuery({
+        query: currentSolution.trim(),
+        decimal: challenge.decimal
+      });
+
+      if (result.success) {
+        setIsCompleted(true);
+        setTimerState(prev => ({ ...prev, isRunning: false }));
+        onComplete(timerState.elapsedTime, errorCount);
+      } else {
+        setIsIncorrect(true);
+        setIsCompleted(false);
+        setErrorCount(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error('Error validating solution:', error);
       setIsIncorrect(true);
-      setIsCompleted(false);
       setErrorCount(prev => prev + 1);
+    } finally {
+      setIsValidating(false);
     }
   };
   
@@ -218,12 +234,12 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
               whileTap={{ scale: isExpired ? 1 : 0.98 }}
               onClick={checkSolution}
               className={`bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 cursor-pointer border border-gray-600 ${
-                isExpired ? 'opacity-60 cursor-not-allowed hover:bg-gray-700' : ''
+                isExpired || isValidating ? 'opacity-60 cursor-not-allowed hover:bg-gray-700' : ''
               }`}
-              disabled={!currentSolution.trim() || isExpired}
+              disabled={!currentSolution.trim() || isExpired || isValidating}
             >
               <Target className="w-4 h-4" />
-              <span className="font-mono">{isExpired ? 'TIEMPO AGOTADO' : 'ANALIZAR DATOS'}</span>
+              <span className="font-mono">{isValidating ? 'VALIDANDO...' : isExpired ? 'TIEMPO AGOTADO' : 'ANALIZAR DATOS'}</span>
             </motion.button>
           )}
 

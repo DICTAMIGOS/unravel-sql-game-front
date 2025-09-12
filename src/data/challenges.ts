@@ -88,6 +88,7 @@ export const challengesData = {
                 "title": "Crear Base de Datos",
                 "description": "Crea la base de datos para el caso Redentor",
                 "level": 1,
+                "decimal": 1.1, 
                 "template": "CREATE DATABASE ___;",
                 "solution": "CREATE DATABASE Caso_Redentor;"
               },
@@ -96,6 +97,7 @@ export const challengesData = {
                 "title": "Mostrar Tablas",
                 "description": "Muestra las tablas de la base de datos Caso_Redentor",
                 "level": 1,
+                "decimal": 1.2,
                 "template": "SHOW TABLES FROM ___;",
                 "solution": "SHOW TABLES FROM Caso_Redentor;"
               },
@@ -104,6 +106,7 @@ export const challengesData = {
                 "title": "Usar Base de Datos",
                 "description": "Selecciona la base de datos Caso_Redentor para trabajar",
                 "level": 1,
+                "decimal": 1.3,
                 "template": "USE ___;",
                 "solution": "USE Caso_Redentor;"
               },
@@ -112,6 +115,7 @@ export const challengesData = {
                 "title": "Consultar Tabla Casos",
                 "description": "Selecciona todos los registros de la tabla Casos",
                 "level": 1,
+                "decimal": 1.4,
                 "template": "SELECT ___ FROM ___;",
                 "solution": "SELECT * FROM Casos;"
               }
@@ -158,6 +162,7 @@ export const challengesData = {
                 "title": "Usar Base de Datos NYPD",
                 "description": "Selecciona la base de datos NYPD_DB",
                 "level": 2,
+                "decimal": 2.1,
                 "template": "USE ___;",
                 "solution": "USE NYPD_DB;"
               },
@@ -166,6 +171,7 @@ export const challengesData = {
                 "title": "Consultar Operativos de Estafa",
                 "description": "Selecciona todos los registros de la tabla Operativos_Estafa",
                 "level": 2,
+                "decimal": 2.2,
                 "template": "SELECT ___ FROM ___;",
                 "solution": "SELECT * FROM Operativos_Estafa;"
               },
@@ -174,6 +180,7 @@ export const challengesData = {
                 "title": "Filtrar Incidentes de Estafa y Fraude",
                 "description": "Encuentra incidentes de tipo estafa o fraude",
                 "level": 2,
+                "decimal": 2.3,
                 "template": "SELECT ___ FROM ___ WHERE ___ =  \"estafa\" or ___ = \"fraude\";",
                 "solution": "SELECT * FROM Incidentes WHERE Tipo_Incidente =  \"estafa\" or Tipo_Incidente = \"fraude\";"
               }
@@ -207,6 +214,7 @@ export const challengesData = {
                 "title": "JOIN de Ciudadanos e Incidentes",
                 "description": "Combina datos de ciudadanos e incidentes para casos de estafa y fraude",
                 "level": 3,
+                "decimal": 3.1,
                 "template": "SELECT ___ FROM Ciudadanos \nLEFT JOIN Incidentes \nON ___.ID_Victima = ___.ID\nWHERE ___ = \"estafa\" OR ___ = \"fraude\";",
                 "solution": "SELECT * FROM Ciudadanos \nLEFT JOIN Incidentes \nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\";"
               },
@@ -215,6 +223,7 @@ export const challengesData = {
                 "title": "Filtrar por Estado Civil y Familia",
                 "description": "Encuentra ciudadanos divorciados o con familiares fallecidos involucrados en estafas",
                 "level": 3,
+                "decimal": 3.2,
                 "template": "SELECT * FROM Ciudadanos \nLEFT JOIN Incidentes \nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE (Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\")\nAND (Divorciado = ___ OR Familiar_Fallecido = ___);",
                 "solution": "SELECT * FROM Ciudadanos \nLEFT JOIN Incidentes \nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE (Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\")\nAND (Divorciado = TRUE OR Familiar_Fallecido = TRUE);"
               },
@@ -223,6 +232,7 @@ export const challengesData = {
                 "title": "Filtrar por Fecha y Ordenar",
                 "description": "Encuentra incidentes recientes (últimos 2 días) ordenados por fecha",
                 "level": 3,
+                "decimal": 3.3,
                 "template": "SELECT * FROM Ciudadanos\nLEFT JOIN Incidentes\nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE \n    (Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\") \n    AND (Divorciado = TRUE OR Familiar_Fallecido = TRUE)\n    AND ___.Fecha_Incidente BETWEEN curdate()-2 AND curdate()\nORDER BY \n    Incidentes.___ DESC;",
                 "solution": "SELECT * FROM Ciudadanos\nLEFT JOIN Incidentes\nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE \n    (Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\") \n    AND (Divorciado = TRUE OR Familiar_Fallecido = TRUE)\n    AND Incidentes.Fecha_Incidente BETWEEN curdate()-2 AND curdate()\nORDER BY \n    Incidentes.Fecha_Incidente DESC;"
               },
@@ -231,6 +241,7 @@ export const challengesData = {
                 "title": "Buscar Dirección de Propiedad",
                 "description": "Encuentra la dirección de la propiedad de Gus Fring",
                 "level": 3,
+                "decimal": 3.4,
                 "template": "SELECT Direccion FROM Propiedades WHERE ___ = \"Gus Fring\";",
                 "solution": "SELECT Direccion FROM Propiedades WHERE Propietario = \"Gus Fring\";"
               }
@@ -290,6 +301,7 @@ export const challengesData = {
                 "title": "INNER JOIN con Condiciones",
                 "description": "Combina incidentes y ciudadanos con condiciones específicas",
                 "level": 4,
+                "decimal": 4.1,
                 "template": "select * from Incidentes \ninner join Ciudadanos \nwhere ___.nombre = \"Gus Fring\" or ___.Cerrado = ___;",
                 "solution": "select * from Incidentes \ninner join Ciudadanos \nwhere Ciudadanos.nombre = \"Gus Fring\" or Incidentes.Cerrado = false;"
               },
@@ -298,6 +310,7 @@ export const challengesData = {
                 "title": "Búsqueda con LIKE",
                 "description": "Busca propiedades cuyo propietario tenga apellido Fring",
                 "level": 4,
+                "decimal": 4.2,
                 "template": "select * from ___ where Propietario like '% Fring';",
                 "solution": "select * from Propiedades where Propietario like '% Fring';"
               }
@@ -357,6 +370,7 @@ export const challengesData = {
                 "title": "Casos Activos",
                 "description": "Encuentra casos que no están en custodia o no están cerrados",
                 "level": 5,
+                "decimal": 5.1,
                 "template": "select ___ from Casos where Custodia = ___ ___ cerrado = ___;",
                 "solution": "select * from Casos where Custodia = false or cerrado = false;"
               },
@@ -365,6 +379,7 @@ export const challengesData = {
                 "title": "Sospechosos Distintos",
                 "description": "Encuentra sospechosos únicos de casos activos",
                 "level": 5,
+                "decimal": 5.2,
                 "template": "select distinct Sospechoso from ___ where (Custodia = ___ ___ Cerrado = ___);",
                 "solution": "select distinct Sospechoso from Casos where (Custodia = false or Cerrado = false);"
               }
