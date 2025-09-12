@@ -76,7 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (isAuthenticated) {
         // If authenticated, set placeholder user
         setAuthState({
-          user: { id: 'authenticated', username: 'User' }, // Placeholder
+          user: { uuid: 'authenticated', username: 'User' }, // Placeholder
           isAuthenticated: true,
           isLoading: false,
         });

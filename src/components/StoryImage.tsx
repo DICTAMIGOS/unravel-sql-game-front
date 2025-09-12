@@ -46,12 +46,9 @@ export const StoryImage: React.FC<StoryImageProps> = ({
                 className="w-full h-auto max-h-96 object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  if (
-                    !target.src.includes('placehold.co') &&
-                    !target.src.includes('via.placeholder')
-                  ) {
-                    target.src = `https://placehold.co/800x400/1f2937/ffffff/png?text=Imagen+${image.order}`;
-                  }
+         
+                    target.src = `https://unravel-sql.vercel.app/${image.url}`;
+      
                 }}
               />
               {/* 🔕 Se elimina el badge "ESCENA X" */}
