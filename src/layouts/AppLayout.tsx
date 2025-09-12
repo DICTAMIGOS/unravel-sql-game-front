@@ -1,17 +1,32 @@
-import { motion } from 'framer-motion';
-import { ArrowLeft, Shield, Search, AlertTriangle, LogOut } from 'lucide-react';
+import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  Shield,
+  Search,
+  AlertTriangle,
+  LogOut,
+  Trophy,
+} from "lucide-react";
 
 interface AppLayoutProps {
   children: React.ReactNode;
-  currentView: 'menu' | 'level' | 'login';
+  currentView: "menu" | "level" | "login";
   currentLevel: number;
   isAuthenticated: boolean;
   onBack: () => void;
   onLogin: () => void;
   onLogout: () => void;
+  onOpenLeaderboard: () => void;
 }
 
-const HeaderButton = ({ isLogin, onBack, onLogin, onLogout, isAuthenticated, isMobile }: {
+const HeaderButton = ({
+  isLogin,
+  onBack,
+  onLogin,
+  onLogout,
+  isAuthenticated,
+  isMobile,
+}: {
   isLogin: boolean;
   onBack: () => void;
   onLogin: () => void;
@@ -19,7 +34,7 @@ const HeaderButton = ({ isLogin, onBack, onLogin, onLogout, isAuthenticated, isM
   isAuthenticated: boolean;
   isMobile: boolean;
 }) => {
-  const buttonClass = isMobile 
+  const buttonClass = isMobile
     ? "bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-1 border border-gray-600 cursor-pointer text-sm"
     : "bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-gray-600 cursor-pointer";
 
@@ -75,16 +90,20 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   isAuthenticated,
   onBack,
   onLogin,
-  onLogout
+  onLogout,
+  onOpenLeaderboard,
 }) => {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
       <div className="fixed inset-0 opacity-5">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-accent-500/10" />
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 25% 25%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
-                           radial-gradient(circle at 75% 75%, rgba(217, 70, 239, 0.1) 0%, transparent 50%)`
-        }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle at 25% 25%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                           radial-gradient(circle at 75% 75%, rgba(217, 70, 239, 0.1) 0%, transparent 50%)`,
+          }}
+        />
       </div>
 
       <header className="relative z-10 bg-gray-800/80 backdrop-blur-sm border-b border-gray-700">
@@ -99,30 +118,49 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
                 </div>
                 <div>
                   <h1 className="text-lg font-bold text-gray-100">Unravel</h1>
-                  <div className="text-xs text-primary-400 font-mono">SISTEMA ACTIVO</div>
+                  <div className="text-xs text-primary-400 font-mono">
+                    SISTEMA ACTIVO
+                  </div>
                 </div>
               </div>
-              <HeaderButton 
-                isLogin={currentView === 'login'}
-                onBack={onBack}
-                onLogin={onLogin}
-                onLogout={onLogout}
-                isAuthenticated={isAuthenticated}
-                isMobile={true}
-              />
+              <div className="flex items-center gap-2">
+                {isAuthenticated && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onOpenLeaderboard}
+                    className="bg-yellow-600 hover:bg-yellow-500 text-white font-medium py-2 px-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-1 border border-yellow-500 cursor-pointer text-sm"
+                  >
+                    <Trophy className="w-4 h-4" />
+                    <span className="hidden xs:inline">Rankings</span>
+                  </motion.button>
+                )}
+                <HeaderButton
+                  isLogin={currentView === "login"}
+                  onBack={onBack}
+                  onLogin={onLogin}
+                  onLogout={onLogout}
+                  isAuthenticated={isAuthenticated}
+                  isMobile={true}
+                />
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Search className="w-3 h-3 text-primary-400" />
-                <span className="text-xs text-primary-400 font-mono">INVESTIGACIÓN</span>
+                <span className="text-xs text-primary-400 font-mono">
+                  INVESTIGACIÓN
+                </span>
                 <AlertTriangle className="w-3 h-3 text-yellow-400" />
               </div>
               <div className="text-right">
                 <div className="text-xs text-gray-400 font-mono">
-                  {currentView === 'level' ? 'MISIÓN ACTIVA' : 'STANDBY'}
+                  {currentView === "level" ? "MISIÓN ACTIVA" : "STANDBY"}
                 </div>
                 <div className="text-xs text-gray-500">
-                  {currentView === 'level' ? `Cap. ${currentLevel}` : 'Operativo'}
+                  {currentView === "level"
+                    ? `Cap. ${currentLevel}`
+                    : "Operativo"}
                 </div>
               </div>
             </div>
@@ -136,10 +174,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-100">Unravel: The data detective</h1>
+                <h1 className="text-xl font-bold text-gray-100">
+                  Unravel: The data detective
+                </h1>
                 <div className="flex items-center gap-2 mt-1">
                   <Search className="w-3 h-3 text-primary-400" />
-                  <span className="text-xs text-primary-400 font-mono">SISTEMA DE INVESTIGACIÓN</span>
+                  <span className="text-xs text-primary-400 font-mono">
+                    SISTEMA DE INVESTIGACIÓN
+                  </span>
                   <AlertTriangle className="w-3 h-3 text-yellow-400" />
                 </div>
               </div>
@@ -147,14 +189,29 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             <div className="flex items-center gap-4">
               <div className="text-right">
                 <div className="text-sm text-gray-400 font-mono">
-                  {currentView === 'level' ? 'MISIÓN ACTIVA' : 'SISTEMA STANDBY'}
+                  {currentView === "level"
+                    ? "MISIÓN ACTIVA"
+                    : "SISTEMA STANDBY"}
                 </div>
                 <div className="text-xs text-gray-500">
-                  {currentView === 'level' ? `Capítulo ${currentLevel}` : 'Estado: Operativo'}
+                  {currentView === "level"
+                    ? `Capítulo ${currentLevel}`
+                    : "Estado: Operativo"}
                 </div>
               </div>
-              <HeaderButton 
-                isLogin={currentView === 'login'}
+              {isAuthenticated && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={onOpenLeaderboard}
+                  className="bg-yellow-600 hover:bg-yellow-500 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 border border-yellow-500 cursor-pointer"
+                >
+                  <Trophy className="w-4 h-4" />
+                  <span>Leaderboard</span>
+                </motion.button>
+              )}
+              <HeaderButton
+                isLogin={currentView === "login"}
                 onBack={onBack}
                 onLogin={onLogin}
                 onLogout={onLogout}
@@ -166,9 +223,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         </div>
       </header>
 
-      <main className="relative z-10">
-        {children}
-      </main>
+      <main className="relative z-10">{children}</main>
 
       <footer className="relative z-10 bg-gray-800/80 backdrop-blur-sm border-t border-gray-700 mt-16">
         <div className="max-w-6xl mx-auto px-6 py-6">
@@ -180,11 +235,21 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             </div>
             <div className="flex items-center justify-center gap-2 mb-2">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-xs text-gray-500 font-mono">SISTEMA DE INVESTIGACIÓN OPERATIVO</span>
+              <span className="text-xs text-gray-500 font-mono">
+                SISTEMA DE INVESTIGACIÓN OPERATIVO
+              </span>
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
             </div>
             <p className="mt-2 text-xs text-gray-500 font-mono">
-              Desarrollado con 💙 por <a href="https://www.dictamigos.com" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-300 font-mono">DICTAMIGOS</a>
+              Desarrollado con 💙 por{" "}
+              <a
+                href="https://www.dictamigos.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:text-gray-300 font-mono"
+              >
+                DICTAMIGOS
+              </a>
             </p>
           </div>
         </div>

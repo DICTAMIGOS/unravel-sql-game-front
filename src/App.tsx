@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useGameState } from './hooks/useGameState';
 import { useAuth } from './hooks/useAuth';
+import { useModalContext } from './hooks/useModalContext';
 import { AppLayout } from './layouts/AppLayout';
 import { AuthView, HomeView, GameView } from './views';
+import { Leaderboard } from './components/Leaderboard';
 
 type GameView = 'menu' | 'level' | 'login';
 
@@ -11,7 +13,8 @@ function App() {
   const [currentView, setCurrentView] = useState<GameView>('menu');
   const [selectedLevelId, setSelectedLevelId] = useState<number>(1);
   const { levels, currentLevel, completeLevel, gameProgress, setDifficulty } = useGameState();
-  const { isAuthenticated, isLoading, logout } = useAuth();
+  const { isAuthenticated, isLoading, logout, user } = useAuth();
+  const { openModal } = useModalContext();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -49,6 +52,23 @@ function App() {
     completeLevel(levelId, totalTime);
   };
 
+  const handleOpenLeaderboard = () => {
+    if (!user) {
+      console.error('No hay usuario autenticado');
+      return;
+    }
+    
+    console.log('Abriendo leaderboard para userId:', user.id);
+    openModal(
+      <Leaderboard userId={user.id} />,
+      {
+        title: '🏆 Clasificaciones Globales',
+        maxWidth: 'lg',
+        className: "bg-gray-800",
+      }
+    );
+  };
+
 
   const selectedLevel = levels.find(level => level.id === selectedLevelId);
 
@@ -71,6 +91,7 @@ function App() {
       onBack={handleBackFromLogin}
       onLogin={handleShowLogin}
       onLogout={handleLogout}
+      onOpenLeaderboard={handleOpenLeaderboard}
     >
       <AnimatePresence mode="wait">
         {currentView === 'login' ? (
