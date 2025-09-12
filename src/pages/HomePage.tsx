@@ -38,9 +38,9 @@ export const HomePage: React.FC = () => {
     openModal(
       <Leaderboard userId={storedUser.uuid} />,
       {
-        title: '🏆 Clasificaciones Globales',
+        title: 'Clasificaciones Globales',
         maxWidth: 'lg',
-        className: "bg-gray-800",
+        className: "bg-gray-800 text-gray-400 font-mono",
       }
     );
   };

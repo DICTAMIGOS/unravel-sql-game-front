@@ -36,6 +36,7 @@ export interface Level {
   unlocked: boolean;
   completed: boolean;
   bestTime?: number;
+  locked?: boolean;
 }
 
 export interface GameProgress {

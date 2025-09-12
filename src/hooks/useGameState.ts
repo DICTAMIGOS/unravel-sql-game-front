@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import type { GameProgress, Level } from '../types/game';
 import { challengesData } from '../data/challenges';
 
+const isLevelLocked = (levelData: unknown): boolean => {
+  return (levelData as { locked?: boolean })?.locked === true;
+};
+
 export const useGameState = () => {
   const [levels, setLevels] = useState<Level[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -21,7 +25,7 @@ export const useGameState = () => {
       name: levelData.name,
       description: levelData.description,
       storySteps: JSON.parse(JSON.stringify(levelData.storySteps || [])),
-      unlocked: true, // All chapters are unlocked
+      unlocked: !isLevelLocked(levelData),
       completed: false,
       bestTime: undefined
     }));
@@ -38,11 +42,11 @@ export const useGameState = () => {
         const parsed = JSON.parse(savedProgress);
         setGameProgress(parsed);
         
-        // Update levels with saved progress (all chapters unlocked)
+        // Update levels with saved progress (respect locked status)
         setLevels(prevLevels => 
           prevLevels.map(level => ({
             ...level,
-            unlocked: true, // All chapters are unlocked
+            unlocked: !isLevelLocked(challengesData.levels.find(l => l.id === level.id)), // Respect locked status
             completed: parsed.completedLevels.includes(level.id),
             bestTime: undefined // No longer tracking individual level times
           }))
@@ -103,10 +107,9 @@ export const useGameState = () => {
     });
     
     setLevels(prevLevels =>
-      prevLevels.map((level,) => ({
+      prevLevels.map((level) => ({
         ...level,
-        // NOTE: All chapters are unlocked
-        unlocked: true,
+        unlocked: !isLevelLocked(challengesData.levels.find(l => l.id === level.id)), // Respect locked status
         completed: false,
         bestTime: undefined
       }))
