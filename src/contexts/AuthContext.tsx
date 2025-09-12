@@ -23,35 +23,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   const login = async (credentials: LoginCredentials): Promise<void> => {
-    try {
-      setAuthState(prev => ({ ...prev, isLoading: true }));
-      const response = await authService.login(credentials);
-      
-      setAuthState({
-        user: response.user,
-        isAuthenticated: true,
-        isLoading: false,
-      });
-    } catch (error) {
-      setAuthState(prev => ({ ...prev, isLoading: false }));
-      throw error;
-    }
+    const response = await authService.login(credentials);
+    
+    setAuthState({
+      user: response.user,
+      isAuthenticated: true,
+      isLoading: false,
+    });
   };
 
   const register = async (credentials: RegisterCredentials): Promise<void> => {
-    try {
-      setAuthState(prev => ({ ...prev, isLoading: true }));
-      const response = await authService.register(credentials);
-      
-      setAuthState({
-        user: response.user,
-        isAuthenticated: true,
-        isLoading: false,
-      });
-    } catch (error) {
-      setAuthState(prev => ({ ...prev, isLoading: false }));
-      throw error;
-    }
+    const response = await authService.register(credentials);
+    
+    setAuthState({
+      user: response.user,
+      isAuthenticated: true,
+      isLoading: false,
+    });
   };
 
   const logout = async (): Promise<void> => {

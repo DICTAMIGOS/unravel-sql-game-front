@@ -43,14 +43,67 @@ class AuthService {
       credentials: 'include',
     };
 
-    const response = await fetch(url, { ...defaultOptions, ...options });
+    try {
+      const response = await fetch(url, { ...defaultOptions, ...options });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ 
+          error: 'Error de conexión con el servidor' 
+        }));
+        
+        // Provide user-friendly error messages based on status codes
+        let errorMessage = errorData.error || errorData.msg;
+        
+        switch (response.status) {
+          case 400:
+            errorMessage = errorMessage || 'Datos de entrada inválidos';
+            break;
+          case 401:
+            if (endpoint.includes('login')) {
+              errorMessage = 'Credenciales incorrectas. Verifica tu ID de agente y código de acceso';
+            } else {
+              errorMessage = 'No autorizado. Tu sesión ha expirado';
+            }
+            break;
+          case 403:
+            errorMessage = 'Acceso denegado. No tienes permisos para realizar esta acción';
+            break;
+          case 404:
+            errorMessage = 'Servicio no encontrado. Contacta al administrador del sistema';
+            break;
+          case 409:
+            if (endpoint.includes('register')) {
+              errorMessage = 'Este ID de agente ya está registrado en el sistema';
+            } else {
+              errorMessage = 'Conflicto de datos. El recurso ya existe';
+            }
+            break;
+          case 422:
+            errorMessage = 'Datos de entrada no válidos. Verifica la información proporcionada';
+            break;
+          case 500:
+            errorMessage = 'Error interno del servidor. Intenta nuevamente más tarde';
+            break;
+          case 503:
+            errorMessage = 'Servicio temporalmente no disponible. Intenta más tarde';
+            break;
+          default:
+            if (!errorMessage) {
+              errorMessage = `Error del servidor (${response.status}). Intenta nuevamente`;
+            }
+        }
+        
+        throw new Error(errorMessage);
+      }
+
+      return response.json();
+    } catch (error) {
+      // Handle network errors
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('Error de conexión. Verifica tu conexión a internet y que el servidor esté funcionando');
+      }
+      throw error;
     }
-
-    return response.json();
   }
 
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
@@ -76,46 +129,68 @@ class AuthService {
   }
 
   async logout(): Promise<{ msg: string }> {
-    const url = `${API_BASE_URL}/auth/logout`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
+    try {
+      const url = `${API_BASE_URL}/auth/logout`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ 
+          error: 'Error de conexión con el servidor' 
+        }));
+        throw new Error(errorData.error || `Error del servidor (${response.status})`);
+      }
+
+      const result = await response.json();
+      
+      this.removeStoredToken();
+      this.removeStoredUser();
+      return result;
+    } catch (error) {
+      // Even if logout fails on server, clear local storage
+      this.removeStoredToken();
+      this.removeStoredUser();
+      
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('Error de conexión al cerrar sesión. Los datos locales han sido eliminados');
+      }
+      throw error;
     }
-
-    const result = await response.json();
-    
-    this.removeStoredToken();
-    this.removeStoredUser();
-    return result;
   }
 
   async refreshToken(): Promise<RefreshResponse> {
-    const url = `${API_BASE_URL}/auth/refresh`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
+    try {
+      const url = `${API_BASE_URL}/auth/refresh`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ 
+          error: 'Error de conexión con el servidor' 
+        }));
+        throw new Error(errorData.error || `Error del servidor (${response.status})`);
+      }
+
+      const result = await response.json();
+      
+      this.setStoredToken(result.access_token);
+      return result;
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('Error de conexión al renovar sesión');
+      }
+      throw error;
     }
-
-    const result = await response.json();
-    
-    this.setStoredToken(result.access_token);
-    return result;
   }
 
   async checkAuth(): Promise<boolean> {
