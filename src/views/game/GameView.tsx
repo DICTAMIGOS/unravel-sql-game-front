@@ -23,6 +23,12 @@ export const GameView: React.FC<GameViewProps> = ({
   onLevelComplete,
   className = ''
 }) => {
+
+  const getSequenceNumber = (sequenceId: string): number => {
+    const match = sequenceId.match(/seq-1-(\d+)/);
+    return match ? parseInt(match[1]) : 1;
+  };
+
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [currentChallengeIndex, setCurrentChallengeIndex] = useState(0);
   const [challengeTimes, setChallengeTimes] = useState<number[]>([]);
@@ -83,7 +89,7 @@ export const GameView: React.FC<GameViewProps> = ({
       try {
         const result = await recordService.createRecord({
           time: totalSequenceTime,
-          level: level.id,
+          level: getSequenceNumber(currentSequence.id),
           difficulty: selectedDifficulty,
           errorCount: totalSequenceErrors
         });
@@ -197,7 +203,7 @@ export const GameView: React.FC<GameViewProps> = ({
             <SequenceRanking
               key="ranking"
               sequenceTitle={lastSequenceData.title}
-              level={level.id}
+              level={getSequenceNumber(lastSequenceData.id)}
               difficulty={selectedDifficulty}
               onNext={handleRankingNext}
             />

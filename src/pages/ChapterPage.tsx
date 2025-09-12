@@ -33,6 +33,11 @@ export const ChapterPage: React.FC = () => {
   const levelId = parseInt(id || '1');
   const level = levels.find(l => l.id === levelId);
 
+  const getSequenceNumber = (sequenceId: string): number => {
+    const match = sequenceId.match(/seq-1-(\d+)/);
+    return match ? parseInt(match[1]) : 1;
+  };
+
   const currentStep = level?.storySteps[currentStepIndex];
   const currentSequence =
     currentStep?.type === 'sequence'
@@ -87,7 +92,7 @@ export const ChapterPage: React.FC = () => {
       try {
         const result = await recordService.createRecord({
           time: totalSequenceTime,
-          level: levelId,
+          level: getSequenceNumber(currentSequence.id),
           difficulty: gameProgress.selectedDifficulty,
           errorCount: totalSequenceErrors
         });
@@ -226,7 +231,7 @@ export const ChapterPage: React.FC = () => {
             <SequenceRanking
               key="ranking"
               sequenceTitle={lastSequenceData.title}
-              level={levelId}
+              level={getSequenceNumber(lastSequenceData.id)}
               difficulty={gameProgress.selectedDifficulty}
               onNext={handleRankingNext}
             />

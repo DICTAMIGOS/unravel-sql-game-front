@@ -157,7 +157,7 @@ export const challengesData = {
                 "id": "1-5",
                 "title": "Usar Base de Datos NYPD",
                 "description": "Selecciona la base de datos NYPD_DB",
-                "level": 1,
+                "level": 2,
                 "template": "USE ___;",
                 "solution": "USE NYPD_DB;"
               },
@@ -165,7 +165,7 @@ export const challengesData = {
                 "id": "1-6",
                 "title": "Consultar Operativos de Estafa",
                 "description": "Selecciona todos los registros de la tabla Operativos_Estafa",
-                "level": 1,
+                "level": 2,
                 "template": "SELECT ___ FROM ___;",
                 "solution": "SELECT * FROM Operativos_Estafa;"
               },
@@ -173,7 +173,7 @@ export const challengesData = {
                 "id": "1-7",
                 "title": "Filtrar Incidentes de Estafa y Fraude",
                 "description": "Encuentra incidentes de tipo estafa o fraude",
-                "level": 1,
+                "level": 2,
                 "template": "SELECT ___ FROM ___ WHERE ___ =  \"estafa\" or ___ = \"fraude\";",
                 "solution": "SELECT * FROM Incidentes WHERE Tipo_Incidente =  \"estafa\" or Tipo_Incidente = \"fraude\";"
               }
@@ -206,7 +206,7 @@ export const challengesData = {
                 "id": "1-8",
                 "title": "JOIN de Ciudadanos e Incidentes",
                 "description": "Combina datos de ciudadanos e incidentes para casos de estafa y fraude",
-                "level": 1,
+                "level": 3,
                 "template": "SELECT ___ FROM Ciudadanos \nLEFT JOIN Incidentes \nON ___.ID_Victima = ___.ID\nWHERE ___ = \"estafa\" OR ___ = \"fraude\";",
                 "solution": "SELECT * FROM Ciudadanos \nLEFT JOIN Incidentes \nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\";"
               },
@@ -214,7 +214,7 @@ export const challengesData = {
                 "id": "1-9",
                 "title": "Filtrar por Estado Civil y Familia",
                 "description": "Encuentra ciudadanos divorciados o con familiares fallecidos involucrados en estafas",
-                "level": 1,
+                "level": 3,
                 "template": "SELECT * FROM Ciudadanos \nLEFT JOIN Incidentes \nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE (Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\")\nAND (Divorciado = ___ OR Familiar_Fallecido = ___);",
                 "solution": "SELECT * FROM Ciudadanos \nLEFT JOIN Incidentes \nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE (Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\")\nAND (Divorciado = TRUE OR Familiar_Fallecido = TRUE);"
               },
@@ -222,7 +222,7 @@ export const challengesData = {
                 "id": "1-10",
                 "title": "Filtrar por Fecha y Ordenar",
                 "description": "Encuentra incidentes recientes (últimos 2 días) ordenados por fecha",
-                "level": 1,
+                "level": 3,
                 "template": "SELECT * FROM Ciudadanos\nLEFT JOIN Incidentes\nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE \n    (Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\") \n    AND (Divorciado = TRUE OR Familiar_Fallecido = TRUE)\n    AND ___.Fecha_Incidente BETWEEN curdate()-2 AND curdate()\nORDER BY \n    Incidentes.___ DESC;",
                 "solution": "SELECT * FROM Ciudadanos\nLEFT JOIN Incidentes\nON Incidentes.ID_Victima = Ciudadanos.ID\nWHERE \n    (Tipo_Incidente = \"estafa\" OR Tipo_Incidente = \"fraude\") \n    AND (Divorciado = TRUE OR Familiar_Fallecido = TRUE)\n    AND Incidentes.Fecha_Incidente BETWEEN curdate()-2 AND curdate()\nORDER BY \n    Incidentes.Fecha_Incidente DESC;"
               },
@@ -230,7 +230,7 @@ export const challengesData = {
                 "id": "1-11",
                 "title": "Buscar Dirección de Propiedad",
                 "description": "Encuentra la dirección de la propiedad de Gus Fring",
-                "level": 1,
+                "level": 3,
                 "template": "SELECT Direccion FROM Propiedades WHERE ___ = \"Gus Fring\";",
                 "solution": "SELECT Direccion FROM Propiedades WHERE Propietario = \"Gus Fring\";"
               }
@@ -289,7 +289,7 @@ export const challengesData = {
                 "id": "1-12",
                 "title": "INNER JOIN con Condiciones",
                 "description": "Combina incidentes y ciudadanos con condiciones específicas",
-                "level": 1,
+                "level": 4,
                 "template": "select * from Incidentes \ninner join Ciudadanos \nwhere ___.nombre = \"Gus Fring\" or ___.Cerrado = ___;",
                 "solution": "select * from Incidentes \ninner join Ciudadanos \nwhere Ciudadanos.nombre = \"Gus Fring\" or Incidentes.Cerrado = false;"
               },
@@ -297,7 +297,7 @@ export const challengesData = {
                 "id": "1-13",
                 "title": "Búsqueda con LIKE",
                 "description": "Busca propiedades cuyo propietario tenga apellido Fring",
-                "level": 1,
+                "level": 4,
                 "template": "select * from ___ where Propietario like '% Fring';",
                 "solution": "select * from Propiedades where Propietario like '% Fring';"
               }
@@ -356,7 +356,7 @@ export const challengesData = {
                 "id": "1-14",
                 "title": "Casos Activos",
                 "description": "Encuentra casos que no están en custodia o no están cerrados",
-                "level": 1,
+                "level": 5,
                 "template": "select ___ from Casos where Custodia = ___ ___ cerrado = ___;",
                 "solution": "select * from Casos where Custodia = false or cerrado = false;"
               },
@@ -364,7 +364,7 @@ export const challengesData = {
                 "id": "1-15",
                 "title": "Sospechosos Distintos",
                 "description": "Encuentra sospechosos únicos de casos activos",
-                "level": 1,
+                "level": 5,
                 "template": "select distinct Sospechoso from ___ where (Custodia = ___ ___ Cerrado = ___);",
                 "solution": "select distinct Sospechoso from Casos where (Custodia = false or Cerrado = false);"
               }
