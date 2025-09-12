@@ -59,7 +59,7 @@ export const HomePage: React.FC = () => {
       case 'completed':
         return <CheckCircle className="w-6 h-6 text-green-400" />;
       case 'current':
-        return <Target className="w-6 h-6 text-primary-400" />;
+        return <Target className="w-6 h-6 text-gray-400" />;
       case 'locked':
         return <Lock className="w-6 h-6 text-gray-500" />;
       default:
@@ -102,7 +102,7 @@ export const HomePage: React.FC = () => {
                 <h1 className="text-xl font-bold text-gray-100 font-mono">
                   CENTRO DE OPERACIONES
                 </h1>
-                <span className="text-xs text-primary-400 font-mono">SISTEMA DE MISIONES</span>
+                <span className="text-xs text-gray-400 font-mono">SISTEMA DE MISIONES</span>
               </div>
             </div>
 

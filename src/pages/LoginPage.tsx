@@ -31,7 +31,7 @@ export const LoginPage: React.FC = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className="min-h-screen flex items-center justify-center px-6"
+      className="min-h-screen bg-gray-900 flex items-center justify-center px-6"
     >
       <div className="w-full max-w-md">
         <motion.div
@@ -54,11 +54,11 @@ export const LoginPage: React.FC = () => {
           
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <Search className="w-5 h-5 text-primary-400" />
-              <span className="text-primary-400 font-medium text-sm">
+              <Search className="w-5 h-5 text-gray-400" />
+              <span className="text-gray-400 font-medium text-sm">
                 SISTEMA DE AUTENTICACIÓN
               </span>
-              <Search className="w-5 h-5 text-primary-400" />
+              <Search className="w-5 h-5 text-gray-400" />
             </div>
             <p className="text-gray-400">
               Identifícate para acceder a los archivos clasificados
@@ -82,7 +82,7 @@ export const LoginPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="username" className="flex text-sm font-medium text-gray-300 mb-2 items-center gap-2">
-                <Fingerprint className="w-4 h-4 text-primary-400" />
+                <Fingerprint className="w-4 h-4 text-gray-400" />
                 ID de Agente
               </label>
               <div className="relative">
@@ -103,7 +103,7 @@ export const LoginPage: React.FC = () => {
             
             <div>
               <label htmlFor="password" className="flex text-sm font-medium text-gray-300 mb-2 items-center gap-2">
-                <Shield className="w-4 h-4 text-primary-400" />
+                <Shield className="w-4 h-4 text-gray-400" />
                 Código de Acceso
               </label>
               <div className="relative">
@@ -158,7 +158,7 @@ export const LoginPage: React.FC = () => {
               ¿No eres un agente autorizado?{' '}
               <Link 
                 to="/register"
-                className="cursor-pointer text-primary-400 hover:text-primary-300 font-medium transition-colors duration-200"
+                className="cursor-pointer text-gray-300 hover:text-white font-medium transition-colors duration-200"
               >
                 Solicitar Acceso
               </Link>

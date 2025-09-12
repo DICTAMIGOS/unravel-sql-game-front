@@ -59,7 +59,7 @@ export const SequenceRanking: React.FC<SequenceRankingProps> = ({
 
   const getPositionColor = (position: number, isCurrentUser: boolean) => {
     if (isCurrentUser) {
-      return 'bg-primary-900/30 border-primary-600';
+      return 'bg-gray-700 border-gray-500';
     }
     switch (position) {
       case 1: return 'bg-yellow-900/20 border-yellow-600';
@@ -149,37 +149,6 @@ export const SequenceRanking: React.FC<SequenceRankingProps> = ({
               </div>
             ) : rankingData ? (
               <div className="space-y-3">
-                {/* Current User Info - Solo si NO está en el top 5 */}
-                {rankingData.currentUser && !rankingData.top5.some(player => player.isCurrentUser) && (
-                  <div className="mb-6 p-4 bg-primary-900/20 border border-primary-600 rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                          {getPositionIcon(rankingData.currentUser.position)}
-                          <span className="text-primary-400 font-mono text-sm">
-                            {rankingData.currentUser.position}º
-                          </span>
-                        </div>
-                        <div>
-                          <h3 className="text-primary-400 font-semibold">
-                            {rankingData.currentUser.username}
-                          </h3>
-                          <span className="text-xs text-primary-400 font-mono">
-                            TU POSICIÓN
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-primary-300 font-mono text-sm">
-                          {formatTime(rankingData.currentUser.time)}
-                        </div>
-                        <div className="text-xs text-primary-400">
-                          {rankingData.currentUser.errorCount} errores
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {/* Top 5 Ranking */}
                 <div className="space-y-3">
@@ -200,11 +169,11 @@ export const SequenceRanking: React.FC<SequenceRankingProps> = ({
                       </div>
                       
                       <div>
-                        <h3 className={`font-semibold ${entry.isCurrentUser ? 'text-primary-400' : 'text-gray-200'}`}>
+                        <h3 className={`font-semibold ${entry.isCurrentUser ? 'text-white' : 'text-gray-200'}`}>
                           {entry.username}
                         </h3>
                         {entry.isCurrentUser && (
-                          <span className="text-xs text-primary-400 font-mono">
+                          <span className="text-xs text-gray-300 font-mono">
                             TU POSICIÓN
                           </span>
                         )}
@@ -224,6 +193,37 @@ export const SequenceRanking: React.FC<SequenceRankingProps> = ({
                   </motion.div>
                   ))}
                 </div>
+
+                {rankingData.currentUser && !rankingData.top5.some(player => player.isCurrentUser) && (
+                  <div className="mt-6 p-4 bg-gray-700 border border-gray-500 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          {getPositionIcon(rankingData.currentUser.position)}
+                          <span className="text-gray-300 font-mono text-sm">
+                            {rankingData.currentUser.position}º
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="text-white font-semibold">
+                            {rankingData.currentUser.username}
+                          </h3>
+                          <span className="text-xs text-gray-300 font-mono">
+                            TU POSICIÓN
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-gray-200 font-mono text-sm">
+                          {formatTime(rankingData.currentUser.time)}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {rankingData.currentUser.errorCount} errores
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Total Players Info */}
                 <div className="mt-6 text-center">

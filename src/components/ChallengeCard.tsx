@@ -99,7 +99,9 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     setIsCompleted(false);
     setExpiredCopy(pickNoirLine());
     setTimerState(prev => ({ ...prev, isRunning: false, elapsedTime: elapsed }));
-    onTimeExpired && window.setTimeout(() => onTimeExpired(), RESTART_DELAY_MS);
+    if (onTimeExpired) {
+      window.setTimeout(() => onTimeExpired(), RESTART_DELAY_MS);
+    }
 
   };
 
@@ -148,7 +150,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-100 font-mono">OBJETIVO {challenge.id}</h2>
-            <span className="text-xs text-primary-400 font-mono">ANÁLISIS DE DATOS</span>
+            <span className="text-xs text-gray-400 font-mono">ANÁLISIS DE DATOS</span>
           </div>
         </div>
         <Timer

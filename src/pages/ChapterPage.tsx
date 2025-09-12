@@ -213,7 +213,7 @@ export const ChapterPage: React.FC = () => {
                 <h1 className="text-xl font-bold text-gray-100 font-mono">
                   MISIÓN {level.id}
                 </h1>
-                <span className="text-xs text-primary-400 font-mono">INVESTIGACIÓN ACTIVA</span>
+                <span className="text-xs text-gray-400 font-mono">INVESTIGACIÓN ACTIVA</span>
               </div>
             </div>
           </div>
@@ -262,10 +262,10 @@ export const ChapterPage: React.FC = () => {
 
                 <div className="bg-gray-700 border border-gray-600 rounded-lg p-4 mb-8">
                   <div className="flex items-center gap-2 mb-2">
-                    <Target className="w-4 h-4 text-primary-400" />
-                    <span className="text-xs text-primary-400 font-mono">TIEMPO TOTAL</span>
+                    <Target className="w-4 h-4 text-gray-400" />
+                    <span className="text-xs text-gray-400 font-mono">TIEMPO TOTAL</span>
                   </div>
-                  <div className="text-2xl font-bold text-primary-400 font-mono">
+                  <div className="text-2xl font-bold text-white font-mono">
                     {formatTime(totalLevelTime)}
                   </div>
                 </div>

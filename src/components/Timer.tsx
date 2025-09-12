@@ -70,21 +70,21 @@ export const Timer: React.FC<TimerProps> = ({
   };
 
   const getTimeColor = (): string => {
-    if (!timerState.timeLimit) return 'text-primary-400';
+    if (!timerState.timeLimit) return 'text-gray-300';
     const percentage = (displayTime / timerState.timeLimit) * 100;
     if (percentage >= 100) return 'text-red-400';
     if (percentage >= 90) return 'text-red-400';
     if (percentage >= 75) return 'text-yellow-400';
-    return 'text-primary-400';
+    return 'text-gray-300';
   };
 
   const getTimeIcon = () => {
-    if (!timerState.timeLimit) return <Clock className="w-5 h-5 text-primary-400" />;
+    if (!timerState.timeLimit) return <Clock className="w-5 h-5 text-gray-400" />;
     const percentage = (displayTime / timerState.timeLimit) * 100;
     if (percentage >= 100) return <AlertTriangle className="w-5 h-5 text-red-400" />;
     if (percentage >= 90) return <Zap className="w-5 h-5 text-red-400" />;
     if (percentage >= 75) return <AlertTriangle className="w-5 h-5 text-yellow-400" />;
-    return <Target className="w-5 h-5 text-primary-400" />;
+    return <Target className="w-5 h-5 text-gray-400" />;
   };
 
   const getTimeStatus = (): string => {
