@@ -13,11 +13,11 @@ export const challengesData = {
             "url": "./images/escena_1_horizontal.png",
             "caption": "Una lápida cubierta por lluvia; el nombre es ilegible.",
             "order": 1,
-            dialogs: [
-              { text: "En una línea de trabajo como la nuestra, vemos al abismo directamente..." },
-              { text: "A veces el abismo nos regresa la mirada." },
-              { text: "Muchos imaginan atrapar a los malos, esa parte ‘heroica’..." },
-              { text: "Pero pocos saben lo que es ver al diablo a los ojos y seguir siendo tú." }
+            "dialogs": [
+              { "text": "En una línea de trabajo como la nuestra, vemos al abismo directamente..." },
+              { "text": "A veces el abismo nos regresa la mirada." },
+              { "text": "Muchos imaginan atrapar a los malos, tener revelaciones de último minuto, disparar un arma..." },
+              { "text": "Pero pocos imaginan lo que realmente vivimos: ver al diablo a los ojos y seguir siendo tú." }
             ]
           }
         },
@@ -29,9 +29,9 @@ export const challengesData = {
             "url": "./images/escena_2_horizontal.png",
             "caption": "En el desierto, una mujer arrodillada; la lluvia no cesa.",
             "order": 2,
-            dialogs: [
-              { text: "Siempre creemos haber visto lo más bajo de la humanidad..." },
-              { text: "Luego llega algo como esto y volvemos a cuestionarlo todo." }
+            "dialogs": [
+              { "text": "Siempre creemos que hemos visto lo más bajo de la humanidad..." },
+              { "text": "Luego llega algo como esto y tenemos que volver a cuestionarlo todo." }
             ]
           }
         },
@@ -43,9 +43,9 @@ export const challengesData = {
             "url": "./images/escena_3_vertical.png",
             "caption": "Mark Thompson y Daniel Miller observan el cuerpo.",
             "order": 3,
-            dialogs: [
-              { text: "Mark: La encontramos así, esto no es normal." },
-              { text: "Daniel: Nada en este trabajo lo es. ¿Qué diablos le pasó?" }
+            "dialogs": [
+              { "text": "Mark: La encontramos así, esto no es normal." },
+              { "text": "Daniel: Nada en este trabajo lo es. ¿Qué diablos le pasó?" }
             ]
           }
         },
@@ -57,9 +57,9 @@ export const challengesData = {
             "url": "./images/escena_4.png",
             "caption": "El estado del cuerpo se revela en fragmentos con alto contraste.",
             "order": 4,
-            dialogs: [
-              { text: "Mark: Tres días… la ató, golpeó, le sacó los ojos y la cosió." },
-              { text: "Daniel: ¿Y para qué me necesitas a mí?" }
+            "dialogs": [
+              { "text": "Mark: Tres días. La ató, golpeó, le sacó los ojos y... la cosió, para dejarla así." },
+              { "text": "Daniel: ¿Y para qué me necesitas a mí?" }
             ]
           }
         },
@@ -71,12 +71,7 @@ export const challengesData = {
             "url": "./images/escena_5.png",
             "caption": "La mano de Mark sostiene un collar ensangrentado: 'Para Daniel Miller'.",
             "order": 5,
-            dialogs: [
-              { text: "Los datos aparecen corruptos... tengo que recuperar lo que pueda." },
-              { text: "Parecen aleatorios, pero quizá pueda meterlos en una base." },
-              { text: "Es una base de nuestros casos, pero no veo patrón: parece una copia rústica." },
-              { text: "No puedo hacer nada más sin más información. Eso me preocupa." }
-            ]
+            "dialogs": []
           }
         },
         {
@@ -87,6 +82,10 @@ export const challengesData = {
             "title": "Secuencia 1: Inicialización y Reconstrucción",
             "description": "Decodifica la memoria y crea la base para iniciar las consultas.",
             "order": 6,
+            "dialogs": [
+              { "text": "“Los datos aparecen corruptos... tengo que intentar recuperar lo más que pueda.”" },
+              { "text": "“Los datos parecen ser aleatorios...”" }
+            ],
             "challenges": [
               {
                 "id": "1-0",
@@ -107,6 +106,11 @@ export const challengesData = {
             "title": "Secuencia 2: Identificación del Sospechoso Principal",
             "description": "Analiza la base de datos para encontrar y perfilar al principal.",
             "order": 7,
+            "dialogs": [
+              { "text": "“Creo que puedo meterlos a una base.”" },
+              { "text": "“Parece una copia rústica de nuestros casos.”" },
+              { "text": "“No puedo hacer nada más sin más información... eso me preocupa.”" }
+            ],
             "challenges": [
               {
                 "id": "1-1",
@@ -135,8 +139,8 @@ export const challengesData = {
             "url": "./images/escena_6.png",
             "caption": "El tablero muestra patrones de movimiento.",
             "order": 8,
-            dialogs: [
-              { text: "El tablero muestra patrones de movimiento. Pero aún faltan piezas..." }
+            "dialogs": [
+              { "text": "El tablero muestra patrones de movimiento. Pero aún faltan piezas..." }
             ]
           }
         },
@@ -148,6 +152,7 @@ export const challengesData = {
             "title": "Secuencia 3: Patrones Sospechosos",
             "description": "Identifica sospechosos con actividad fuera de lo normal.",
             "order": 9,
+            "dialogs": [],
             "challenges": [
               {
                 "id": "1-3",
@@ -168,8 +173,8 @@ export const challengesData = {
             "url": "./images/escena_7.png",
             "caption": "“No puedo hacer nada más sin tener más información… y eso preocupa.”",
             "order": 10,
-            dialogs: [
-              { text: "“No puedo hacer nada más sin tener más información… y eso preocupa.”" }
+            "dialogs": [
+              { "text": "“No puedo hacer nada más sin tener más información… y eso preocupa.”" }
             ]
           }
         }
@@ -188,9 +193,9 @@ export const challengesData = {
             "url": "./images/escena_6.png",
             "caption": "En la pantalla, Scottie Reacher con 'Mentiras' cortado en el pecho.",
             "order": 1,
-            dialogs: [
-              { text: "Dwight: Scottie Reacher fue hallado anoche en Hell’s Kitchen." },
-              { text: "Es la tercera víctima: todos estafadores, ‘seguros’ e ‘inversiones’ fraudulentas." }
+            "dialogs": [
+              { "text": "Dwight: Scottie Reacher fue hallado anoche en Hell’s Kitchen, NYC." },
+              { "text": "Es la tercera víctima; todos estafadores: ‘seguros’ e ‘inversiones’ fraudulentas." }
             ]
           }
         },
@@ -202,10 +207,10 @@ export const challengesData = {
             "url": "./images/escena_7.png",
             "caption": "Mark, Daniel y Ava se presentan y trazan el plan.",
             "order": 2,
-            dialogs: [
-              { text: "Mark: El móvil parece personal. ¿Qué sabemos de estafadores en NYC?" },
-              { text: "Daniel: Abundan. El FBI guarda datos de algunos… quizá parte de algo mayor." },
-              { text: "Ava: Filtra víctimas con fraudes reportados. Quien pierde demasiado, explota." }
+            "dialogs": [
+              { "text": "Mark: El móvil parece personal. ¿Qué sabemos de estafadores en NYC?" },
+              { "text": "Daniel: Abundan. El FBI guarda datos de algunos… quizá parte de algo mayor." },
+              { "text": "Ava: Filtra víctimas con fraudes reportados. Quien pierde demasiado, explota." }
             ]
           }
         },
@@ -217,8 +222,10 @@ export const challengesData = {
             "title": "Tutorial: Conexión y Consulta Inicial",
             "description": "Conéctate a NYPD y extrae estafadores e informes.",
             "order": 3,
-            dialogs: [
-              { text: "Redada en la casa de Gus Fring. Silencio… hasta que algo suena al fondo." }
+            "dialogs": [
+              { "text": "“Tengo que entrar a la base de datos de la policía de Nueva York.”" },
+              { "text": "“Bien, ahora la información de los estafadores de Nueva York.”" },
+              { "text": "“No fue mucho, pero podrá servir. Ahora, los informes de fraude.”" }
             ],
             "challenges": [
               {
@@ -256,6 +263,12 @@ export const challengesData = {
             "title": "Filtro de Víctimas con Factores de Riesgo",
             "description": "Cruza víctimas con ciudadanos y filtra por duelo/divorcio y recencia.",
             "order": 4,
+            "dialogs": [
+              { "text": "Ava: Danny, necesitamos un filtrado de víctimas de fraudes. Cruza con ciudadanos." },
+              { "text": "“Necesitamos quienes pasaron por divorcio o fallecimiento familiar.”" },
+              { "text": "“Ahora, los más recientes: últimos 2 meses.”" },
+              { "text": "“Danos la dirección, Danny.”" }
+            ],
             "challenges": [
               {
                 "id": "2-4",
@@ -284,8 +297,8 @@ export const challengesData = {
             "url": "./images/escena_9.png",
             "caption": "El equipo irrumpe en la casa de Gus.",
             "order": 5,
-            dialogs: [
-              { text: "Redada en la casa de Gus Fring. Silencio… hasta que algo suena al fondo." }
+            "dialogs": [
+              { "text": "Redada en la casa de Gus Fring. Silencio... hasta que algo suena al fondo." }
             ]
           }
         },
@@ -297,8 +310,8 @@ export const challengesData = {
             "url": "./images/escena10.png",
             "caption": "Comienza la persecución nocturna por la ciudad.",
             "order": 6,
-            dialogs: [
-              { text: "La persecución comienza. La ciudad, la lluvia y los focos recortan sombras." }
+            "dialogs": [
+              { "text": "La persecución comienza. La ciudad, la lluvia y los focos recortan sombras." }
             ]
           }
         },
@@ -310,6 +323,10 @@ export const challengesData = {
             "title": "Interrogatorio y Propiedades",
             "description": "Consulta antecedentes abiertos y propiedades vinculadas a 'Fring'.",
             "order": 7,
+            "dialogs": [
+              { "text": "“Necesitamos sus antecedentes. Seguramente hay violencia no resuelta.”" },
+              { "text": "“Busca propiedades del núcleo familiar; alguna bodega o casa.”" }
+            ],
             "challenges": [
               {
                 "id": "2-6",
@@ -338,8 +355,8 @@ export const challengesData = {
             "url": "./images/escena_12.png",
             "caption": "Redada en una bodega; la víctima no logra ser salvada.",
             "order": 8,
-            dialogs: [
-              { text: "Llegamos tarde. La víctima no logró ser salvada." }
+            "dialogs": [
+              { "text": "Llegamos tarde. La víctima no logró ser salvada." }
             ]
           }
         },
@@ -351,8 +368,8 @@ export const challengesData = {
             "url": "./images/escena_13.png",
             "caption": "Gus es ingresado en custodia policial.",
             "order": 9,
-            dialogs: [
-              { text: "Gus es ingresado en custodia. Algo no encaja del todo." }
+            "dialogs": [
+              { "text": "Gus es ingresado en custodia. Algo no encaja del todo." }
             ]
           }
         }
@@ -371,8 +388,8 @@ export const challengesData = {
             "url": "./images/escena_14.png",
             "caption": "La pantalla revela que Gus escapó de custodia.",
             "order": 1,
-            dialogs: [
-              { text: "Gus escapó de custodia. Alguien abrió la puerta… o lo dejó pasar." }
+            "dialogs": [
+              { "text": "Gus escapó de custodia. Alguien abrió la puerta… o lo dejó pasar." }
             ]
           }
         },
@@ -384,6 +401,11 @@ export const challengesData = {
             "title": "Desencriptación de la Memoria",
             "description": "Decodifica el mensaje: 'Los ciegos ven lo que el ojo ignora…'",
             "order": 2,
+            "dialogs": [
+              { "text": "“Otra memoria... esto no me gusta nada.”" },
+              { "text": "“Esto parece ser una especie de código.”" },
+              { "text": "“Los ciegos ven lo que el ojo ignora. Busca la verdad en las sombras de los que fallaron...”" }
+            ],
             "challenges": [
               {
                 "id": "3-1",
@@ -404,6 +426,10 @@ export const challengesData = {
             "title": "Identificar a 'los que escaparon'",
             "description": "Filtra casos sin custodia o abiertos.",
             "order": 3,
+            "dialogs": [
+              { "text": "“La respuesta debe estar por aquí... ‘los que escaparon’.”" },
+              { "text": "“Filtra: en custodia = FALSE o cerrado = FALSE.”" }
+            ],
             "challenges": [
               {
                 "id": "3-2",
@@ -412,14 +438,6 @@ export const challengesData = {
                 "level": 3,
                 "template": "SELECT s.id, s.nombre\nFROM casos c\nJOIN sospechosos s ON s.id = c.sospechoso_id\nWHERE c.en_custodia = FALSE OR c.cerrado = FALSE;",
                 "solution": "SELECT s.id, s.nombre\nFROM casos c\nJOIN sospechosos s ON s.id = c.sospechoso_id\nWHERE c.en_custodia = FALSE OR c.cerrado = FALSE;"
-              },
-              {
-                "id": "3-3",
-                "title": "Crear vista de escapados",
-                "description": "Persistir el conjunto para consultas rápidas.",
-                "level": 3,
-                "template": "CREATE VIEW vw_escapados AS\nSELECT s.id, s.nombre\nFROM casos c\nJOIN sospechosos s ON s.id = c.sospechoso_id\nWHERE c.en_custodia = FALSE OR c.cerrado = FALSE;",
-                "solution": "CREATE VIEW vw_escapados AS\nSELECT s.id, s.nombre\nFROM casos c\nJOIN sospechosos s ON s.id = c.sospechoso_id\nWHERE c.en_custodia = FALSE OR c.cerrado = FALSE;"
               }
             ]
           }
@@ -432,6 +450,10 @@ export const challengesData = {
             "title": "Une culpables con víctimas",
             "description": "Relaciona 'vw_escapados' con víctimas de casos abiertos.",
             "order": 4,
+            "dialogs": [
+              { "text": "“Lo guardaré en una vista para que sea más rápido.”" },
+              { "text": "“Ahí guardaré la lista de sospechosos.”" }
+            ],
             "challenges": [
               {
                 "id": "3-4",
@@ -460,6 +482,7 @@ export const challengesData = {
             "title": "Cruce temporal y geoespacial",
             "description": "Relaciona movimientos con lugar/fecha de víctimas.",
             "order": 5,
+            "dialogs": [],
             "challenges": [
               {
                 "id": "3-6",
@@ -480,8 +503,8 @@ export const challengesData = {
             "url": "./images/escena_14.png",
             "caption": "Reporte final: 'Que la luz del sol no los toque'.",
             "order": 6,
-            dialogs: [
-              { text: "Reporte final: ‘Que la luz del sol no los toque’…" }
+            "dialogs": [
+              { "text": "Reporte final: ‘Que la luz del sol no los toque’…" }
             ]
           }
         },
@@ -493,6 +516,7 @@ export const challengesData = {
             "title": "Reporte Final",
             "description": "Expón a culpables y víctimas en un resumen ordenado.",
             "order": 7,
+            "dialogs": [],
             "challenges": [
               {
                 "id": "3-7",
@@ -503,93 +527,6 @@ export const challengesData = {
                 "solution": "SELECT e.nombre AS sospechoso, v.nombre AS victima, ca.id AS caso, ca.estado\nFROM vw_escapados e\nJOIN casos ca ON ca.sospechoso_id = e.id\nJOIN victimas v ON v.id = ca.victima_id\nORDER BY sospechoso, victima;"
               }
             ]
-          }
-        }
-      ]
-    },
-
-    /* ---------- NIVEL ADICIONAL: FBI (del segundo dataset) ---------- */
-    {
-      "id": 4,
-      "name": "FBI (demo)",
-      "description": "Ayuda al FBI a resolver un caso",
-      "storySteps": [
-        {
-          "type": "image",
-          "order": 1,
-          "data": {
-            "id": "img-4-1",
-            "url": "https://placehold.co/800x400/1f2937/ffffff/png?text=Escena+1:+La+Oficina+del+FBI",
-            "caption": "La oficina del FBI recibe una llamada anónima sobre actividades sospechosas",
-            "order": 1
-          }
-        },
-        {
-          "type": "sequence",
-          "order": 3,
-          "data": {
-            "id": "4-1",
-            "title": "Secuencia 1: Identificación del Sospechoso Principal",
-            "description": "Analiza la base de datos para encontrar al sospechoso principal",
-            "order": 3,
-            "challenges": [
-              {
-                "id": "4-1-1",
-                "title": "Caso FBI - Pista 1",
-                "description": "Encuentra el nombre del sospechoso principal en la base de datos",
-                "level": 4,
-                "template": "SELECT ___ FROM sospechosos WHERE tipo = 'principal'",
-                "solution": "SELECT nombre FROM sospechosos WHERE tipo = 'principal'"
-              },
-              {
-                "id": "4-1-2",
-                "title": "Caso FBI - Pista 2",
-                "description": "Obtén el nombre del sospechoso y la fecha de su último movimiento",
-                "level": 4,
-                "template": "SELECT s.nombre, m.fecha FROM sospechosos s ___ JOIN movimientos m ON s.id = m.sospechoso_id WHERE s.tipo = 'principal'",
-                "solution": "SELECT s.nombre, m.fecha FROM sospechosos s INNER JOIN movimientos m ON s.id = m.sospechoso_id WHERE s.tipo = 'principal'"
-              }
-            ]
-          }
-        },
-        {
-          "type": "image",
-          "order": 4,
-          "data": {
-            "id": "img-4-2",
-            "url": "https://placehold.co/800x400/1f2937/ffffff/png?text=Escena+3:+Análisis+de+Patrones",
-            "caption": "El agente analiza los patrones de movimiento de los sospechosos",
-            "order": 4
-          }
-        },
-        {
-          "type": "sequence",
-          "order": 5,
-          "data": {
-            "id": "4-2",
-            "title": "Secuencia 2: Análisis de Patrones Sospechosos",
-            "description": "Identifica patrones anómalos en los movimientos de los sospechosos",
-            "order": 5,
-            "challenges": [
-              {
-                "id": "4-2-1",
-                "title": "Caso FBI - Pista 3",
-                "description": "Encuentra sospechosos que tienen más movimientos que el promedio",
-                "level": 4,
-                "template": "SELECT s.nombre, COUNT(m.id) as total_movimientos FROM sospechosos s JOIN movimientos m ON s.id = m.sospechoso_id GROUP BY s.id, s.nombre ___ COUNT(m.id) > (SELECT ___ FROM (SELECT COUNT(*) AS cnt FROM movimientos GROUP BY sospechoso_id) t)",
-                "solution": "SELECT s.nombre, COUNT(m.id) AS total_movimientos\nFROM sospechosos s JOIN movimientos m ON s.id = m.sospechoso_id\nGROUP BY s.id, s.nombre\nHAVING COUNT(m.id) > (SELECT AVG(cnt) FROM (SELECT COUNT(*) AS cnt FROM movimientos GROUP BY sospechoso_id) t)"
-              }
-            ]
-          }
-        },
-        {
-          "type": "image",
-          "order": 6,
-          "data": {
-            "id": "img-4-3",
-            "url": "https://placehold.co/800x400/1f2937/ffffff/png?text=Escena+4:+Caso+Resuelto",
-            "caption": "¡Caso resuelto! El agente ha identificado al culpable",
-            "order": 6
           }
         }
       ]
