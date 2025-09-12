@@ -10,7 +10,7 @@ export const challengesData = {
           "order": 1,
           "data": {
             "id": "img-1-1",
-            "url": "./public/images/escena_1_horizontal.png",
+            "url": "./images/escena_1_horizontal.png",
             "caption": "Una lápida cubierta por lluvia; el nombre es ilegible.",
             "order": 1,
             "dialogs": [
@@ -26,7 +26,7 @@ export const challengesData = {
           "order": 2,
           "data": {
             "id": "img-1-2",
-            "url": "./public/images/escena_2_horizontal.png",
+            "url": "./images/escena_2_horizontal.png",
             "caption": "En el desierto, una mujer arrodillada; la lluvia no cesa.",
             "order": 2,
             "dialogs": [
@@ -40,7 +40,7 @@ export const challengesData = {
           "order": 3,
           "data": {
             "id": "img-1-3",
-            "url": "./public/images/escena_3_vertical.png",
+            "url": "./images/escena_3_vertical.png",
             "caption": "Mark Thompson y Daniel Miller observan el cuerpo.",
             "order": 3,
             "dialogs": [
@@ -54,7 +54,7 @@ export const challengesData = {
           "order": 4,
           "data": {
             "id": "img-1-4",
-            "url": "./public/images/escena_4.png",
+            "url": "./images/escena_4.png",
             "caption": "El estado del cuerpo se revela en fragmentos con alto contraste.",
             "order": 4,
             "dialogs": [
@@ -68,7 +68,7 @@ export const challengesData = {
           "order": 5,
           "data": {
             "id": "img-1-5",
-            "url": "./public/images/escena_5.png",
+            "url": "./images/escena_5.png",
             "caption": "La mano de Mark sostiene un collar ensangrentado: 'Para Daniel Miller'.",
             "order": 5,
             "dialogs": []
@@ -123,7 +123,7 @@ export const challengesData = {
           "order": 7,
           "data": {
             "id": "img-1-6",
-            "url": "./public/images/escena_6.png",
+            "url": "./images/escena_6.png",
             "caption": "El tablero muestra patrones de movimiento.",
             "order": 7,
             "dialogs": [
@@ -136,7 +136,7 @@ export const challengesData = {
           "order": 8,
           "data": {
             "id": "img-1-7",
-            "url": "./public/images/escena_7.png",
+            "url": "./images/escena_7.png",
             "caption": "No puedo hacer nada más sin tener más información… y eso preocupa.",
             "order": 8,
             "dialogs": [
@@ -185,7 +185,7 @@ export const challengesData = {
           "order": 10,
           "data": {
             "id": "img-1-8",
-            "url": "./public/images/escena_8.png",
+            "url": "./images/escena_8.png",
             "caption": "Escena 8 - Continuación de la investigación.",
             "order": 10,
             "dialogs": [
@@ -242,7 +242,7 @@ export const challengesData = {
           "order": 12,
           "data": {
             "id": "img-1-9",
-            "url": "./public/images/escena_9.png",
+            "url": "./images/escena_9.png",
             "caption": "Escena 9 - Nuevas revelaciones.",
             "order": 12,
             "dialogs": [
@@ -255,7 +255,7 @@ export const challengesData = {
           "order": 13,
           "data": {
             "id": "img-1-10",
-            "url": "./public/images/escena_10.png",
+            "url": "./images/escena_10.png",
             "caption": "Escena 10 - El caso se complica.",
             "order": 13,
             "dialogs": [
@@ -268,7 +268,7 @@ export const challengesData = {
           "order": 14,
           "data": {
             "id": "img-1-11",
-            "url": "./public/images/escena_11.png",
+            "url": "./images/escena_11.png",
             "caption": "Escena 11 - Acercándose a la verdad.",
             "order": 14,
             "dialogs": [
@@ -309,7 +309,7 @@ export const challengesData = {
           "order": 16,
           "data": {
             "id": "img-1-12",
-            "url": "./public/images/escena_12.png",
+            "url": "./images/escena_12.png",
             "caption": "Escena 12 - La verdad se revela.",
             "order": 16,
             "dialogs": [
@@ -322,7 +322,7 @@ export const challengesData = {
           "order": 17,
           "data": {
             "id": "img-1-13",
-            "url": "./public/images/escena_13.png",
+            "url": "./images/escena_13.png",
             "caption": "Escena 13 - El desenlace se acerca.",
             "order": 17,
             "dialogs": [
@@ -335,7 +335,7 @@ export const challengesData = {
           "order": 18,
           "data": {
             "id": "img-1-14",
-            "url": "./public/images/escena_14.png",
+            "url": "./images/escena_14.png",
             "caption": "Escena 14 - El final del caso.",
             "order": 18,
             "dialogs": [
@@ -376,7 +376,7 @@ export const challengesData = {
           "order": 20,
           "data": {
             "id": "img-1-15",
-            "url": "./public/images/escena_final.png",
+            "url": "./images/escena_final.png",
             "caption": "Fin - El caso ha sido resuelto.",
             "order": 20,
             "dialogs": [
