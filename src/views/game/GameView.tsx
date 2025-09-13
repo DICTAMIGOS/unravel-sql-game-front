@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Trophy, Home, Search, Target } from 'lucide-react';
+import { ArrowLeft, Trophy, Home, Search, Target, AlertTriangle } from 'lucide-react';
 import type { Level, StoryImage, ChallengeSequence } from '../../types/game';
 import { StoryImage as StoryImageComponent } from '../../components/StoryImage';
 import { ChallengeCard } from '../../components/ChallengeCard';
@@ -38,6 +38,13 @@ export const GameView: React.FC<GameViewProps> = ({
     errors: number;
   } | null>(null);
 
+  // --- Derrota / Reinicio ---
+  const [showDefeat, setShowDefeat] = useState<null | { reason?: string }>(null);
+  const defeatTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Si llevas cronómetros globales, puedes reiniciarlos aquí
+  const [elapsedMs, setElapsedMs] = useState(0);
+
   const { user } = useAuth();
 
   const currentStep = level.storySteps[currentStepIndex];
@@ -47,7 +54,20 @@ export const GameView: React.FC<GameViewProps> = ({
       : null;
   const currentChallenge = currentSequence?.challenges[currentChallengeIndex];
 
+  // Reset completo cuando cambia el nivel
   useEffect(() => {
+    resetToLevelStart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [level.id]);
+
+  useEffect(() => {
+    return () => {
+      if (defeatTimerRef.current) clearTimeout(defeatTimerRef.current);
+    };
+  }, []);
+
+  // Reinicia TODO al inicio del nivel
+  const resetToLevelStart = () => {
     setCurrentStepIndex(0);
     setCurrentChallengeIndex(0);
     setChallengeTimes([]);
@@ -57,7 +77,18 @@ export const GameView: React.FC<GameViewProps> = ({
     setAccumulatedTime(0);
     setShowRanking(false);
     setLastSequenceData(null);
-  }, [level.id]);
+    setElapsedMs(0);
+  };
+
+  // Muestra mensaje de derrota y reinicia luego de X ms
+  const handleDefeat = (reason = 'Derrota') => {
+    setShowDefeat({ reason });
+    if (defeatTimerRef.current) clearTimeout(defeatTimerRef.current);
+    defeatTimerRef.current = setTimeout(() => {
+      setShowDefeat(null);
+      resetToLevelStart();
+    }, 2500); // 2.5 s para que el jugador alcance a leer
+  };
 
   // Compatibilidad: permite onComplete(time) o onComplete(time, errorCount)
   const handleChallengeComplete = async (time: number, errorCount: number = 0) => {
@@ -100,7 +131,7 @@ export const GameView: React.FC<GameViewProps> = ({
     setChallengeTimes([]);
     setChallengeErrors([]);
 
-    // Acumular tiempo al total del nivel (mantener comportamiento original)
+    // Acumular tiempo al total del nivel
     const newAccumulatedTime = accumulatedTime + newTotalTime;
     setAccumulatedTime(newAccumulatedTime);
 
@@ -163,6 +194,7 @@ export const GameView: React.FC<GameViewProps> = ({
 
   return (
     <div className={`min-h-screen bg-gray-900 ${className}`}>
+      {/* Barra superior */}
       <div className="bg-gray-800 border-b border-gray-700 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
@@ -191,6 +223,7 @@ export const GameView: React.FC<GameViewProps> = ({
         </div>
       </div>
 
+      {/* Contenido */}
       <div className="max-w-4xl mx-auto px-6 py-8">
         <AnimatePresence mode="wait">
           {showRanking && lastSequenceData ? (
@@ -236,7 +269,6 @@ export const GameView: React.FC<GameViewProps> = ({
                     <Target className="w-4 h-4 text-primary-400" />
                     <span className="text-xs text-primary-400 font-mono">TIEMPO TOTAL</span>
                   </div>
-                  {/* Mantengo el totalLevelTime como en tu 2.º código */}
                   <div className="text-2xl font-bold text-primary-400 font-mono">
                     {formatTime(totalLevelTime)}
                   </div>
@@ -266,7 +298,6 @@ export const GameView: React.FC<GameViewProps> = ({
               {currentStep.type === 'image' ? (
                 <StoryImageComponent
                   image={currentStep.data as StoryImage}
-                  // ✔ Soporte de globos de diálogo como en tu 1.º GameView
                   dialogs={(currentStep.data as StoryImage & { dialogs?: { text: string }[] }).dialogs ?? []}
                   onNext={handleNextStep}
                 />
@@ -308,18 +339,49 @@ export const GameView: React.FC<GameViewProps> = ({
 
                   {/* Challenge Card */}
                   <ChallengeCard
-                    challenge={currentChallenge}
-                    timeLimit={getTimeLimitForDifficulty(selectedDifficulty)}
-                    // Compatible con firmas antiguas y nuevas
-                    onComplete={handleChallengeComplete}
-                    onNext={() => {}} // Controlado automáticamente
-                  />
+  challenge={currentChallenge}
+  timeLimit={getTimeLimitForDifficulty(selectedDifficulty)}
+  onComplete={handleChallengeComplete}
+  onNext={() => {}}
+  onTimeExpired={() => handleDefeat('Se acabó el tiempo')} // ⬅️ AQUÍ
+/>
+
                 </div>
               ) : null}
             </motion.div>
           ) : null}
         </AnimatePresence>
       </div>
+
+      {/* Overlay de Derrota */}
+      <AnimatePresence>
+        {showDefeat && (
+          <motion.div
+            key="defeat-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 grid place-items-center bg-black/70"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="rounded-2xl bg-gray-900 px-6 py-6 text-center shadow-xl border border-gray-700 max-w-md w-[92%]"
+            >
+              <div className="mx-auto mb-3 w-14 h-14 rounded-xl bg-red-600 grid place-items-center">
+                <AlertTriangle className="w-7 h-7 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold tracking-wide text-white">¡Derrota!</h2>
+              <p className="mt-1 text-gray-300">
+                {showDefeat.reason ?? 'Intenta de nuevo'}
+              </p>
+              <p className="mt-3 text-sm text-gray-400 font-mono">Reiniciando…</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
+    
   );
 };
