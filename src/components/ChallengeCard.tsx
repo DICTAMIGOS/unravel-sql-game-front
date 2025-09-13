@@ -248,7 +248,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
               whileHover={{ scale: isExpired ? 1 : 1.02 }}
               whileTap={{ scale: isExpired ? 1 : 0.98 }}
               onClick={checkSolution}
-              className={`w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 sm:py-2 px-3 sm:px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-gray-600 ${
+              className={`w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 sm:py-2 px-3 sm:px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-gray-600 cursor-pointer ${
                 isExpired ? 'opacity-60 cursor-not-allowed hover:bg-gray-700' : ''
               }`}
               disabled={!currentSolution.trim() || isExpired}
@@ -265,7 +265,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onNext}
-              className="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 sm:py-2 px-3 sm:px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-primary-500"
+              className="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 sm:py-2 px-3 sm:px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-primary-500 cursor-pointer"
             >
               <span className="font-mono text-xs sm:text-sm">
                 <span className="hidden sm:inline">SIGUIENTE OBJETIVO</span>

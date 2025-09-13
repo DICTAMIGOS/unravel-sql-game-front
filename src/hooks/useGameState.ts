@@ -119,10 +119,13 @@ export const useGameState = () => {
   };
 
   const setDifficulty = (difficulty: 'easy' | 'medium' | 'hard') => {
-    setGameProgress(prev => ({
-      ...prev,
+    const newProgress = {
+      ...gameProgress,
       selectedDifficulty: difficulty
-    }));
+    };
+    setGameProgress(newProgress);
+    // Guardar inmediatamente en localStorage
+    localStorage.setItem('unravel-sql-progress', JSON.stringify(newProgress));
   };
 
   return {

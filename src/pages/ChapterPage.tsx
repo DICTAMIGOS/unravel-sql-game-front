@@ -67,7 +67,6 @@ export const ChapterPage: React.FC = () => {
     setLastSequenceData(null);
   }, [level, navigate, isLoading]);
 
-  // Compatibilidad: permite onComplete(time) o onComplete(time, errorCount)
   const handleChallengeComplete = async (time: number, errorCount: number = 0) => {
     const newChallengeTimes = [...challengeTimes, time];
     const newChallengeErrors = [...challengeErrors, errorCount];
@@ -96,6 +95,7 @@ export const ChapterPage: React.FC = () => {
           difficulty: gameProgress.selectedDifficulty,
           errorCount: totalSequenceErrors
         });
+                
         if (!result.success) {
           console.error('Failed to create record:', result.message);
         }

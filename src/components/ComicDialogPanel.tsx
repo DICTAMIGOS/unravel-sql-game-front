@@ -216,7 +216,7 @@ export const ComicDialogPanel: React.FC<ComicDialogPanelProps> = ({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handlePause}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-gray-600 bg-gray-700 px-3 py-2 text-xs sm:text-sm text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-all duration-200 font-mono"
+                  className="cursor-pointer w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-gray-600 bg-gray-700 px-3 py-2 text-xs sm:text-sm text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-all duration-200 font-mono"
                 >
                   <Pause className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">PAUSAR</span>
@@ -227,7 +227,7 @@ export const ComicDialogPanel: React.FC<ComicDialogPanelProps> = ({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handlePlay}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-primary-600 bg-primary-700 px-3 py-2 text-xs sm:text-sm text-white hover:bg-primary-600 transition-all duration-200 font-mono"
+                  className="cursor-pointer w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg border border-primary-600 bg-primary-700 px-3 py-2 text-xs sm:text-sm text-white hover:bg-primary-600 transition-all duration-200 font-mono"
                 >
                   <Play className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">REANUDAR</span>
@@ -241,7 +241,7 @@ export const ComicDialogPanel: React.FC<ComicDialogPanelProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleSkip}
-              className="inline-flex items-center justify-center gap-1 sm:gap-2 rounded-lg border border-gray-600 bg-gray-700 px-2 sm:px-4 py-2 text-xs sm:text-sm text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-all duration-200 font-mono"
+              className="cursor-pointer inline-flex items-center justify-center gap-1 sm:gap-2 rounded-lg border border-gray-600 bg-gray-700 px-2 sm:px-4 py-2 text-xs sm:text-sm text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-all duration-200 font-mono"
             >
               <SkipForward className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline">SIGUIENTE</span>
@@ -252,7 +252,7 @@ export const ComicDialogPanel: React.FC<ComicDialogPanelProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleReset}
-              className="inline-flex items-center justify-center gap-1 sm:gap-2 rounded-lg border border-gray-600 bg-gray-700 px-2 sm:px-4 py-2 text-xs sm:text-sm text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-all duration-200 font-mono"
+              className="cursor-pointer inline-flex items-center justify-center gap-1 sm:gap-2 rounded-lg border border-gray-600 bg-gray-700 px-2 sm:px-4 py-2 text-xs sm:text-sm text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-all duration-200 font-mono"
             >
               <TimerReset className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline">REINICIAR</span>
