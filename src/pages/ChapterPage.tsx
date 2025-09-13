@@ -46,13 +46,16 @@ export const ChapterPage: React.FC = () => {
   const currentChallenge = currentSequence?.challenges[currentChallengeIndex];
 
   useEffect(() => {
-    // Don't redirect if still loading
     if (isLoading) {
       return;
     }
     
     if (!level) {
       navigate('/home');
+      return;
+    }
+    
+    if (isLevelCompleted) {
       return;
     }
     
@@ -65,7 +68,7 @@ export const ChapterPage: React.FC = () => {
     setAccumulatedTime(0);
     setShowRanking(false);
     setLastSequenceData(null);
-  }, [level, navigate, isLoading]);
+  }, [level, navigate, isLoading, isLevelCompleted]);
 
   const handleChallengeComplete = async (time: number, errorCount: number = 0) => {
     const newChallengeTimes = [...challengeTimes, time];
@@ -76,13 +79,11 @@ export const ChapterPage: React.FC = () => {
     const newTotalTime = newChallengeTimes.reduce((sum, t) => sum + t, 0);
     setTotalLevelTime(newTotalTime);
 
-    // ¿Siguiente reto dentro de la secuencia?
     if (currentSequence && currentChallengeIndex < currentSequence.challenges.length - 1) {
       setCurrentChallengeIndex(prev => prev + 1);
       return;
     }
 
-    // Secuencia terminada: enviar récord y mostrar ranking
     const storedUser = authService.getStoredUser();
     if (currentSequence && storedUser) {
       const totalSequenceTime = newChallengeTimes.reduce((sum, t) => sum + t, 0);
@@ -104,16 +105,13 @@ export const ChapterPage: React.FC = () => {
       }
     }
 
-    // Reset internos de secuencia
     setCurrentChallengeIndex(0);
     setChallengeTimes([]);
     setChallengeErrors([]);
 
-    // Acumular tiempo al total del nivel (mantener comportamiento original)
     const newAccumulatedTime = accumulatedTime + newTotalTime;
     setAccumulatedTime(newAccumulatedTime);
 
-    // Mostrar ranking de la secuencia recién terminada
     if (currentSequence) {
       setLastSequenceData({
         id: currentSequence.id,
@@ -125,12 +123,12 @@ export const ChapterPage: React.FC = () => {
       return;
     }
 
-    // Si no era secuencia, avanzar pasos normalmente
     if (level && currentStepIndex < level.storySteps.length - 1) {
       setCurrentStepIndex(prev => prev + 1);
     } else {
       setIsLevelCompleted(true);
       completeLevel(levelId, newAccumulatedTime);
+      setTimeout(() => {navigate('/home')});
     }
   };
 
@@ -140,6 +138,7 @@ export const ChapterPage: React.FC = () => {
     } else {
       setIsLevelCompleted(true);
       completeLevel(levelId, accumulatedTime);
+      setTimeout(() => { navigate('/home')} );
     }
   };
 
@@ -152,6 +151,7 @@ export const ChapterPage: React.FC = () => {
     } else {
       setIsLevelCompleted(true);
       completeLevel(levelId, accumulatedTime);
+      setTimeout(() => {navigate('/home')});
     }
   };
 

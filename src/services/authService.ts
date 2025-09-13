@@ -23,6 +23,10 @@ class AuthService {
     localStorage.removeItem('user_data');
   }
 
+  private removeStoredProgress(): void {
+    localStorage.removeItem('unravel-sql-progress');
+  }
+
   getStoredUser(): User | null {
     const userData = localStorage.getItem('user_data');
     return userData ? JSON.parse(userData) : null;
@@ -150,11 +154,13 @@ class AuthService {
       
       this.removeStoredToken();
       this.removeStoredUser();
+      this.removeStoredProgress();
       return result;
     } catch (error) {
       // Even if logout fails on server, clear local storage
       this.removeStoredToken();
       this.removeStoredUser();
+      this.removeStoredProgress();
       
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error('Error de conexión al cerrar sesión. Los datos locales han sido eliminados');
