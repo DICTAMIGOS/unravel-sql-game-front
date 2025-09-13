@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Cookie, Settings, Shield, BarChart3, Target, RotateCcw } from 'lucide-react';
-import { useCookieConsent, type CookiePreferences } from '../hooks/useCookieConsent';
+import { useCookieConsent, type CookiePreferences as UseCookiePreferencesType } from '../hooks/useCookieConsent';
 
 interface CookiePreferencesProps {
   className?: string;
@@ -9,7 +9,7 @@ interface CookiePreferencesProps {
 
 export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ className = '' }) => {
   const { consent, acceptSelected, resetConsent } = useCookieConsent();
-  const [preferences, setPreferences] = useState<CookiePreferences>(
+  const [preferences, setPreferences] = useState<UseCookiePreferencesType>(
     consent?.preferences || {
       necessary: true,
       functional: true,
@@ -18,7 +18,7 @@ export const CookiePreferences: React.FC<CookiePreferencesProps> = ({ className 
     }
   );
 
-  const togglePreference = (key: keyof CookiePreferences) => {
+  const togglePreference = (key: keyof UseCookiePreferencesType) => {
     if (key === 'necessary') return; // No se puede desactivar
     setPreferences(prev => ({
       ...prev,
