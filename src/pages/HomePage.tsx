@@ -93,7 +93,8 @@ export const HomePage: React.FC = () => {
       {/* Header */}
       <div className="bg-gray-800 border-b border-gray-700 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-primary-500 p-2 rounded-lg">
                 <Target className="w-5 h-5 text-white" />
@@ -125,6 +126,45 @@ export const HomePage: React.FC = () => {
               >
                 <LogOut className="w-4 h-4" />
                 <span className="font-mono text-sm">SALIR</span>
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Mobile Layout */}
+          <div className="sm:hidden">
+            {/* Top row - Logo and title */}
+            <div className="flex items-center gap-2 mb-3">
+              <div className="bg-primary-500 p-1.5 rounded-lg">
+                <Target className="w-4 h-4 text-white" />
+              </div>
+              <div className="flex-1">
+                <h1 className="text-lg font-bold text-gray-100 font-mono">
+                  CENTRO DE OPERACIONES
+                </h1>
+                <span className="text-xs text-gray-400 font-mono">SISTEMA DE MISIONES</span>
+              </div>
+            </div>
+
+            {/* Bottom row - Action buttons */}
+            <div className="flex items-center gap-2">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleOpenLeaderboard}
+                className="flex-1 flex items-center justify-center gap-1.5 text-gray-300 hover:text-gray-100 transition-colors cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-2 rounded-lg border border-gray-600"
+              >
+                <Trophy className="w-4 h-4" />
+                <span className="font-mono text-xs">CLASIFICACIONES</span>
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleLogout}
+                className="flex-1 flex items-center justify-center gap-1.5 text-gray-300 hover:text-gray-100 transition-colors cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-2 rounded-lg border border-gray-600"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="font-mono text-xs">SALIR</span>
               </motion.button>
             </div>
           </div>

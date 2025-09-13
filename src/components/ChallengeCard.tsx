@@ -115,28 +115,42 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`bg-gray-800 border border-gray-700 rounded-xl p-6 shadow-xl relative ${className}`}
+      className={`bg-gray-800 border border-gray-700 rounded-xl p-3 sm:p-6 shadow-xl relative ${className}`}
     >
-      {/* Mobile */}
-      <div className="block sm:hidden mb-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-100 font-mono">OBJETIVO {challenge.id}</h2>
-          <div className="flex items-center gap-2">
+      {/* Mobile Header */}
+      <div className="block sm:hidden mb-3">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="bg-primary-500 p-1 rounded-lg">
+            <Target className="w-3 h-3 text-white" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-base font-bold text-gray-100 font-mono">OBJETIVO {challenge.id}</h2>
+            <span className="text-xs text-gray-400 font-mono">ANÁLISIS DE DATOS</span>
+          </div>
+        </div>
+        
+        {/* Timer móvil compacto */}
+        <div className="flex items-center justify-between bg-gray-700/50 rounded-lg px-2 py-1.5">
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
+            <span className="text-xs text-gray-300 font-mono">TIEMPO</span>
+          </div>
+          <div className="flex items-center gap-1">
             <span
               className={`font-mono text-sm font-semibold ${
                 !timerState.timeLimit
-                  ? 'text-primary-400'
+                  ? 'text-gray-100'
                   : (timerState.elapsedTime / (timerState.timeLimit || 1)) * 100 >= 90
                   ? 'text-red-400'
                   : (timerState.elapsedTime / (timerState.timeLimit || 1)) * 100 >= 75
                   ? 'text-yellow-400'
-                  : 'text-primary-400'
+                  : 'text-gray-100'
               }`}
             >
               {formatTime(timerState.elapsedTime)}
             </span>
             {timerState.timeLimit && (
-              <span className="text-gray-400 text-xs font-mono">/ {formatTime(timerState.timeLimit)}</span>
+              <span className="text-gray-400 text-xs font-mono">/{formatTime(timerState.timeLimit)}</span>
             )}
           </div>
         </div>
@@ -169,18 +183,26 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
         </div>
       )}
 
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <FileText className="w-4 h-4 text-gray-400" />
-          <span className="text-sm text-gray-400 font-mono">INSTRUCCIONES DE LA MISIÓN</span>
+      {/* Instrucciones */}
+      <div className="mb-3 sm:mb-6">
+        <div className="flex items-center gap-1.5 mb-1.5 sm:mb-3">
+          <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
+          <span className="text-xs sm:text-sm text-gray-400 font-mono">
+            <span className="hidden sm:inline">INSTRUCCIONES DE LA MISIÓN</span>
+            <span className="sm:hidden">INSTRUCCIONES</span>
+          </span>
         </div>
-        <p className="text-gray-300 leading-relaxed font-mono">{challenge.description}</p>
+        <p className="text-gray-300 leading-relaxed font-mono text-sm sm:text-base">{challenge.description}</p>
       </div>
 
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <Shield className="w-4 h-4 text-gray-400" />
-          <span className="text-sm text-gray-400 font-mono">CONSULTA DE INVESTIGACIÓN</span>
+      {/* Consulta SQL */}
+      <div className="mb-3 sm:mb-6">
+        <div className="flex items-center gap-1.5 mb-1.5 sm:mb-3">
+          <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
+          <span className="text-xs sm:text-sm text-gray-400 font-mono">
+            <span className="hidden sm:inline">CONSULTA DE INVESTIGACIÓN</span>
+            <span className="sm:hidden">CONSULTA SQL</span>
+          </span>
         </div>
 
         {/* Bloquea edición cuando expira */}
@@ -194,36 +216,47 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      {/* Status y botones */}
+      <div className="space-y-2 sm:space-y-0">
+        {/* Status messages */}
+        <div className="flex items-center gap-1.5">
           {isCompleted && (
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2 text-green-400">
-              <CheckCircle className="w-5 h-5" />
-              <span className="text-sm font-medium font-mono">OBJETIVO COMPLETADO</span>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-1.5 text-green-400">
+              <CheckCircle className="w-3 h-3 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm font-medium font-mono">
+                <span className="hidden sm:inline">OBJETIVO COMPLETADO</span>
+                <span className="sm:hidden">COMPLETADO</span>
+              </span>
             </motion.div>
           )}
 
           {isIncorrect && !isExpired && (
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2 text-red-400">
-              <X className="w-5 h-5" />
-              <span className="text-sm font-medium font-mono">ANÁLISIS INCORRECTO</span>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-1.5 text-red-400">
+              <X className="w-3 h-3 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm font-medium font-mono">
+                <span className="hidden sm:inline">ANÁLISIS INCORRECTO</span>
+                <span className="sm:hidden">INCORRECTO</span>
+              </span>
             </motion.div>
           )}
         </div>
 
-        <div className="flex gap-3">
+        {/* Botones */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end">
           {!isCompleted && (
             <motion.button
               whileHover={{ scale: isExpired ? 1 : 1.02 }}
               whileTap={{ scale: isExpired ? 1 : 0.98 }}
               onClick={checkSolution}
-              className={`bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 cursor-pointer border border-gray-600 ${
+              className={`w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 sm:py-2 px-3 sm:px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-gray-600 ${
                 isExpired ? 'opacity-60 cursor-not-allowed hover:bg-gray-700' : ''
               }`}
               disabled={!currentSolution.trim() || isExpired}
             >
-              <Target className="w-4 h-4" />
-              <span className="font-mono">{isExpired ? 'TIEMPO AGOTADO' : 'ANALIZAR DATOS'}</span>
+              <Target className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="font-mono text-xs sm:text-sm">
+                {isExpired ? 'TIEMPO AGOTADO' : 'ANALIZAR DATOS'}
+              </span>
             </motion.button>
           )}
 
@@ -232,10 +265,13 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onNext}
-              className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center gap-2 cursor-pointer border border-gray-600"
+              className="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 sm:py-2 px-3 sm:px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-primary-500"
             >
-              <span className="font-mono">SIGUIENTE OBJETIVO</span>
-              <ArrowRight className="w-4 h-4" />
+              <span className="font-mono text-xs sm:text-sm">
+                <span className="hidden sm:inline">SIGUIENTE OBJETIVO</span>
+                <span className="sm:hidden">SIGUIENTE</span>
+              </span>
+              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
             </motion.button>
           )}
         </div>

@@ -105,7 +105,7 @@ export const Timer: React.FC<TimerProps> = ({
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
           {getTimeIcon()}
-          <span className={`font-mono text-lg font-semibold ${getTimeColor()}`}>
+          <span className={`text-gray-100 font-mono text-lg font-semibold ${getTimeColor()}`}>
             {formatTime(displayTime)}
           </span>
           {timerState.timeLimit && (
