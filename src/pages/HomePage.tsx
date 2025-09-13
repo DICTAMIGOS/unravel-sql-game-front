@@ -45,6 +45,7 @@ export const HomePage: React.FC = () => {
     );
   };
 
+
   const getLevelStatus = (level: Level) => {
     if (level.completed) return 'completed';
     if (level.id === currentLevel) return 'current';

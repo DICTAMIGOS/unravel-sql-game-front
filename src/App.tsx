@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import { LoginPage, RegisterPage, HomePage, ChapterPage } from './pages';
+import { CookieBanner } from './components/CookieBanner';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -63,6 +64,9 @@ function App() {
           } 
         />
       </Routes>
+      
+      {/* Cookie Banner - se muestra en todas las páginas */}
+      <CookieBanner />
     </Router>
   );
 }
